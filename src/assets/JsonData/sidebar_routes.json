@@ -1,0 +1,18 @@
+[
+    
+    {
+        "display_name": "Agents",
+        "route": "/agents",
+        "icon": "bx bx-user-pin"
+    },
+    {
+        "display_name": "Technician",
+        "route": "/technician",
+        "icon": "bx bxs-briefcase-alt-2"
+    },
+    {
+        "display_name": "Orders",
+        "route": "/orders",
+        "icon": "bx bxs-cart-alt"
+    }
+]
