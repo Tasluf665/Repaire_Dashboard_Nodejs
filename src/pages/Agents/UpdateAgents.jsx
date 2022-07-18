@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-import { handleSubmit } from "../../server/Agent";
+import { updateAgent } from "../../server/Agent";
 import CommonUpdatePage from "../../components/custome/CommonUpdatePage";
 
 export default function UpdateAgents(props) {
@@ -9,7 +9,7 @@ export default function UpdateAgents(props) {
     <CommonUpdatePage
       title="Agent"
       location={props.location}
-      handleSubmit={handleSubmit}
+      handleSubmit={updateAgent}
       edit={edit}
       setEdit={setEdit}
     />

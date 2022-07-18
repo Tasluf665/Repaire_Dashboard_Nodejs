@@ -31,7 +31,6 @@ export default function CustomeFormMultipleGroup({
           type="number"
           placeholder="Enter Whatsapp Number"
           name="whatsappNum"
-          required
           defaultValue={whatsappNum ? whatsappNum : null}
         />
       </CustomeFormGroup>

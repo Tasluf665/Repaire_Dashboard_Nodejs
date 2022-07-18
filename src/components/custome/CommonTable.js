@@ -1,12 +1,22 @@
 import React from "react";
 import { Form } from "react-bootstrap";
+import _ from "lodash";
 
 import CustomeSpinner from "./CustomeSpinner";
 import TopTitle from "./TopTitle";
-import Table from "../table/Table";
+import CustomeTable from "./CustomeTable";
 
 export default function CommonTable(props) {
-  const renderHead = (item, index) => <th key={index}>{item}</th>;
+  const filterAllAgent = (allAgents) => {
+    const filterAgent = [];
+    allAgents.map((item) => {
+      filterAgent.push(
+        _.pick(item, ["name", "phone", "region", "city", "area", "location"])
+      );
+    });
+    return filterAgent;
+  };
+
   return (
     <div>
       {props.loading ? (
@@ -23,7 +33,7 @@ export default function CommonTable(props) {
               type="text"
               placeholder="Search with Phone Number"
               name="search"
-              onChange={props.handleSearch}
+              onChange={() => {}}
               style={styles.inputStyle}
             />
           </div>
@@ -31,14 +41,9 @@ export default function CommonTable(props) {
             <div className="col-12">
               <div className="card">
                 <div className="card__body">
-                  <Table
-                    limit="10"
-                    headData={props.customerTableHead}
-                    renderHead={(item, index) => renderHead(item, index)}
-                    renderBody={(item, index) => props.renderBody(item, index)}
-                    bodyData={props.filterData}
-                    dataShow={props.dataShow}
-                    setDataShow={props.setDataShow}
+                  <CustomeTable
+                    tableHeader={props.customerTableHead}
+                    allAgents={filterAllAgent(props.allAgents)}
                   />
                 </div>
               </div>
@@ -55,3 +60,15 @@ const styles = {
     width: "40%",
   },
 };
+
+{
+  /* <Table
+    limit="10"
+    headData={props.customerTableHead}
+    renderHead={(item, index) => renderHead(item, index)}
+    renderBody={(item, index) => props.renderBody(item, index)}
+    bodyData={props.filterData}
+    dataShow={props.dataShow}
+    setDataShow={props.setDataShow}
+/> */
+}

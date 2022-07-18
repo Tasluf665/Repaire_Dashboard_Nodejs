@@ -1,9 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import { auth } from "../firebaseConfig";
 import {
-  createUserWithEmailAndPassword,
   onAuthStateChanged,
-  signInWithEmailAndPassword,
   signOut,
   sendPasswordResetEmail,
 } from "firebase/auth";
@@ -18,12 +16,35 @@ export function AuthProvider({ children }) {
   const [currentUser, setCurrentUser] = useState();
   const [loading, setLoading] = useState(true);
 
-  function signup(email, password) {
-    return createUserWithEmailAndPassword(auth, email, password);
+  async function signup(name, email, password) {
+    let response = await fetch("http://localhost:3001/api/users", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ name: name, email: email, password: password }),
+      mode: "cors",
+    });
+
+    let result = await response.json();
+
+    if (!result.error) setCurrentUser(result);
+    else throw new Error(result.error);
   }
 
-  function login(email, password) {
-    return signInWithEmailAndPassword(auth, email, password);
+  async function login(email, password) {
+    let response = await fetch("http://localhost:3001/api/auth", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email: email, password: password }),
+    });
+
+    let result = await response.json();
+
+    if (!result.error) setCurrentUser(result);
+    else throw new Error(result.error);
   }
 
   function logout() {
