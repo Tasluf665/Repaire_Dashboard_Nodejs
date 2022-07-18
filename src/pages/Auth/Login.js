@@ -36,11 +36,29 @@ export default function Login() {
           <Form onSubmit={handleSubmit}>
             <Form.Group id="email">
               <Form.Label>Email</Form.Label>
+<<<<<<< HEAD
               <Form.Control type="email" ref={emailRef} required />
             </Form.Group>
             <Form.Group id="password">
               <Form.Label>Password</Form.Label>
               <Form.Control type="password" ref={passwordRef} required />
+=======
+              <Form.Control
+                type="email"
+                ref={emailRef}
+                required
+                autocomplete="on"
+              />
+            </Form.Group>
+            <Form.Group id="password">
+              <Form.Label>Password</Form.Label>
+              <Form.Control
+                type="password"
+                ref={passwordRef}
+                required
+                autocomplete="on"
+              />
+>>>>>>> 405dd40fab289a58c1eacd76ac41203d08af69b9
             </Form.Group>
             <Button
               disabled={loading}

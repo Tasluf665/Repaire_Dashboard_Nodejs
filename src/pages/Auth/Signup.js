@@ -46,6 +46,7 @@ export default function Signup() {
           <Form onSubmit={handleSubmit}>
             <Form.Group id="name">
               <Form.Label>Name</Form.Label>
+<<<<<<< HEAD
               <Form.Control type="text" ref={nameRef} required />
             </Form.Group>
             <Form.Group id="email">
@@ -59,6 +60,41 @@ export default function Signup() {
             <Form.Group id="password-confirm">
               <Form.Label>Password Confirmation</Form.Label>
               <Form.Control type="password" ref={passwordConfirmRef} required />
+=======
+              <Form.Control
+                type="text"
+                ref={nameRef}
+                required
+                autocomplete="on"
+              />
+            </Form.Group>
+            <Form.Group id="email">
+              <Form.Label>Email</Form.Label>
+              <Form.Control
+                type="email"
+                ref={emailRef}
+                required
+                autocomplete="on"
+              />
+            </Form.Group>
+            <Form.Group id="password">
+              <Form.Label>Password</Form.Label>
+              <Form.Control
+                type="password"
+                ref={passwordRef}
+                required
+                autocomplete="on"
+              />
+            </Form.Group>
+            <Form.Group id="password-confirm">
+              <Form.Label>Password Confirmation</Form.Label>
+              <Form.Control
+                type="password"
+                ref={passwordConfirmRef}
+                required
+                autocomplete="on"
+              />
+>>>>>>> 405dd40fab289a58c1eacd76ac41203d08af69b9
             </Form.Group>
             <Button
               disabled={loading}

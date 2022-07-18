@@ -25,7 +25,11 @@ export default function CustomeTable(props) {
           {props.allAgents.map((item, index) => {
             return (
               <tr>
+<<<<<<< HEAD
                 <th scope="row">{index + 1}</th>
+=======
+                <th scope="row">{props.currPage * 10 + index + 1}</th>
+>>>>>>> 405dd40fab289a58c1eacd76ac41203d08af69b9
                 {getItem(item)}
                 <td>
                   <Link

@@ -199,6 +199,7 @@ export const updateAgent = async (event, setValidated, jwtToken, id) => {
   setValidated(true);
 };
 
+<<<<<<< HEAD
 export const getAgents = async (jwtToken) => {
   const res = await fetch(`http://localhost:3001/api/agents`, {
     headers: {
@@ -212,4 +213,21 @@ export const getAgents = async (jwtToken) => {
   }
 
   return objectToArray(data);
+=======
+export const getAgents = async (jwtToken, pageNumber, pageSize, name) => {
+  const res = await fetch(
+    name
+      ? `http://localhost:3001/api/agents?pageNumber=${pageNumber}&pageSize=${pageSize}&name=${name}`
+      : `http://localhost:3001/api/agents?pageNumber=${pageNumber}&pageSize=${pageSize}`,
+    {
+      headers: {
+        "x-auth-token": jwtToken,
+      },
+    }
+  );
+  const data = await res.json();
+
+  if (!data.error) return data;
+  else throw new Error(data.error);
+>>>>>>> 405dd40fab289a58c1eacd76ac41203d08af69b9
 };
