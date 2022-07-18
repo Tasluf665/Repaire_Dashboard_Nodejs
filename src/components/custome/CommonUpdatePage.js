@@ -9,16 +9,7 @@ import { useAuth } from "../../context/AuthContext";
 
 export default function CommonUpdatePage(props) {
   const [validated, setValidated] = useState(false);
-  const [accessToken, setAccessToken] = React.useState();
   const { currentUser } = useAuth();
-
-  React.useEffect(() => {
-    const getAccessToken = async () => {
-      let token = await currentUser.accessToken;
-      setAccessToken(token);
-    };
-    getAccessToken();
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const detailsComponent = () => {
     return (
@@ -67,9 +58,8 @@ export default function CommonUpdatePage(props) {
             props.handleSubmit(
               event,
               setValidated,
-              "update",
-              accessToken,
-              props.location.state.key
+              currentUser.token,
+              props.location.state._id
             )
           }
         >
@@ -77,7 +67,7 @@ export default function CommonUpdatePage(props) {
             name={props.location.state.name}
             email={props.location.state.email}
             phone={props.location.state.phone}
-            whatsappNum={props.location.state.whatsappNum}
+            whatsappNum={props.location.state.whatsappNumber}
           />
 
           {props.edit ? <CustomeFormAddressGroup /> : detailsComponent()}

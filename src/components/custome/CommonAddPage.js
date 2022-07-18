@@ -9,16 +9,7 @@ import { useAuth } from "../../context/AuthContext";
 
 export default function CommonAddPage(props) {
   const [validated, setValidated] = React.useState(false);
-  const [accessToken, setAccessToken] = React.useState();
   const { currentUser } = useAuth();
-
-  React.useEffect(() => {
-    const getAccessToken = async () => {
-      let token = await currentUser.accessToken;
-      setAccessToken(token);
-    };
-    getAccessToken();
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <div className="col-12 d-flex justify-content-center">
@@ -29,7 +20,7 @@ export default function CommonAddPage(props) {
           noValidate
           validated={validated}
           onSubmit={(event) => {
-            props.handleSubmit(event, setValidated, "add", accessToken);
+            props.handleSubmit(event, setValidated, currentUser.token);
           }}
         >
           <CustomeFormMultipleGroup />

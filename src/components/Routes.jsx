@@ -1,6 +1,6 @@
 import React from "react";
 
-import { Route, Switch } from "react-router-dom";
+import { Route, Switch, Redirect } from "react-router-dom";
 
 import Agents from "../pages/Agents/Agents";
 import AddAgents from "../pages/Agents/AddAgents";
@@ -15,7 +15,10 @@ import Signup from "../pages/Auth/Signup";
 import ForgotPassword from "../pages/Auth/ForgotPassword";
 import PrivateRoute from "./PrivateRoute";
 
+import { useAuth } from "../context/AuthContext";
+
 const Routes = () => {
+  const { currentUser } = useAuth();
   return (
     <Switch>
       <PrivateRoute path="/" exact component={Agents} />
@@ -27,9 +30,15 @@ const Routes = () => {
       <PrivateRoute path="/updatetechnician" component={UpdateTechnician} />
       <PrivateRoute path="/orders" component={Orders} />
       <PrivateRoute path="/updateorder" component={UpdateOrder} />
-      <Route path={"/login"} component={Login} />
-      <Route path={"/signup"} component={Signup} />
-      <Route path={"/forgot-password"} component={ForgotPassword} />
+      <Route path={"/login"}>
+        {currentUser ? <Redirect to="/" /> : <Login />}
+      </Route>
+      <Route path={"/signup"}>
+        {currentUser ? <Redirect to="/" /> : <Signup />}
+      </Route>
+      <Route path={"/forgot-password"}>
+        {currentUser ? <Redirect to="/" /> : <ForgotPassword />}
+      </Route>
     </Switch>
   );
 };

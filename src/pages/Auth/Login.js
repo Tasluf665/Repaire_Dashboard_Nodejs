@@ -20,8 +20,8 @@ export default function Login() {
       setLoading(true);
       await login(emailRef.current.value, passwordRef.current.value);
       history.push("/");
-    } catch {
-      setError("Failed to log in");
+    } catch (ex) {
+      setError(ex.message);
     }
 
     setLoading(false);
@@ -36,11 +36,21 @@ export default function Login() {
           <Form onSubmit={handleSubmit}>
             <Form.Group id="email">
               <Form.Label>Email</Form.Label>
-              <Form.Control type="email" ref={emailRef} required />
+              <Form.Control
+                type="email"
+                ref={emailRef}
+                required
+                autocomplete="on"
+              />
             </Form.Group>
             <Form.Group id="password">
               <Form.Label>Password</Form.Label>
-              <Form.Control type="password" ref={passwordRef} required />
+              <Form.Control
+                type="password"
+                ref={passwordRef}
+                required
+                autocomplete="on"
+              />
             </Form.Group>
             <Button
               disabled={loading}
