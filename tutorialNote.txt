@@ -1,0 +1,25 @@
+YouTube:
+For React Route: https://www.youtube.com/watch?v=vOdW8JsmB5c&t=114s
+
+Websites:
+For React Route: https://reactrouter.com/docs/en/v6/getting-started/overview#index-routes
+
+For React bootstrap: https://react-bootstrap.netlify.app/getting-started/introduction/
+
+MDN React bootstrap: https://mdbootstrap.com/docs/
+
+CORS plm solve https://developers.google.com/web/ilt/pwa/working-with-the-fetch-api
+
+
+// "start": "react-scripts start",
+//     "build": "react-scripts build",
+//     "test": "react-scripts test",
+//     "eject": "react-scripts eject"
+
+// "dev": "react-scripts start",
+// "start": "serve -s build",
+// "build": "react-scripts build",
+// "test": "react-scripts test --env=jsdom",
+// "eject": "react-scripts eject",
+// "heroku-postbuild": "npm run build"
+
