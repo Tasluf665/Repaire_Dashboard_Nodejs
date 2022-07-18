@@ -1,111 +1,107 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import _ from "lodash";
 
-import CommonTable from "../../components/custome/CommonTable";
-import { getAgents } from "../../server/Agent";
+import FullTable from "../../components/table/FullTable";
+import TopTitle from "../../components/custome/TopTitle";
+import Searchbar from "../../components/custome/Searchbar";
+import WrapperComponent from "../../components/custome/WrapperComponent";
 import { getTechnicians } from "../../server/Technician";
 import { useAuth } from "../../context/AuthContext";
 
-const Technician = () => {
-  const [loading, setLoading] = React.useState(true);
-  const [allTechnicians, setAllTechnicians] = React.useState([]);
-  const [filterAllTechnicians, setFilterAllTechnicians] = React.useState([]);
-  const [allAgents, setAllAgents] = React.useState([]);
-  const [dataShow, setDataShow] = React.useState();
-  const [error, setError] = React.useState();
+const customerTableHead = [
+  "",
+  "name",
+  "phone",
+  "region",
+  "city",
+  "area",
+  "agent",
+  "",
+];
 
-  const { currentUser, logout } = useAuth();
+const Technician = () => {
+  const { currentUser } = useAuth();
+
+  const [loading, setLoading] = React.useState(true);
+  const [error, setError] = React.useState();
+  const [data, setData] = React.useState([]);
+  const [currPage, setCurrPage] = React.useState(0);
 
   React.useEffect(() => {
     const getData = async () => {
-      const accessToken = await currentUser.accessToken;
-      const allAgents = await getAgents(accessToken);
-      const allTechnicians = await getTechnicians(accessToken);
-
-      if (allTechnicians.error || allAgents.error) {
-        if (allAgents.error === "Auth token is expired") {
-          logout();
-        }
-        setError(allAgents.error);
-      } else {
-        setAllAgents(allAgents);
-        setAllTechnicians(allTechnicians);
-        setDataShow(allTechnicians);
-        setFilterAllTechnicians(allTechnicians);
-        setLoading(false);
-      }
+      const data = await getTechnicians(currentUser.token, 1, 10);
+      setData(data);
+      setLoading(false);
     };
-    getData();
+
+    try {
+      getData();
+    } catch (ex) {
+      setError(ex.message);
+    }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const handleSearch = (event) => {
-    const value = event.target.value;
+  const searchRef = React.useRef();
 
-    let filterData = allTechnicians.filter((item) =>
-      item.phone.includes(value)
-    );
-    setDataShow(filterData);
-    setFilterAllTechnicians(filterData);
+  const hanldeSearch = async () => {
+    try {
+      const data = await getTechnicians(
+        currentUser.token,
+        1,
+        10,
+        searchRef.current.value != "" ? searchRef.current.value : null
+      );
+      setCurrPage(0);
+      setData(data);
+    } catch (ex) {
+      setError(ex.message);
+    }
   };
 
-  const customerTableHead = [
-    "",
-    "name",
-    "phone",
-    "region",
-    "city",
-    "area",
-    "agent",
-    "",
-  ];
+  const filterData = (data) => {
+    const filter = [];
+    data.map((item) => {
+      let temp = _.pick(item, ["name", "phone", "region", "city", "area"]);
+      temp.agent = item.agent.name;
+      filter.push(temp);
+    });
+    return filter;
+  };
 
-  const renderBody = (item, index) => (
-    <tr key={index}>
-      <td>{item.countId}</td>
-      <td>{item.name}</td>
-      <td>{item.phone}</td>
-      <td>{item.region}</td>
-      <td>{item.city}</td>
-      <td>{item.area}</td>
-      <td>{allAgents.find((agent) => agent.key === item.agentId).phone}</td>
-      <td>
-        <Link
-          to={{
-            pathname: "/updatetechnician",
-            state: item,
-          }}
-          style={{ textDecoration: "none" }}
-        >
-          Details
-        </Link>
-      </td>
-    </tr>
-  );
+  const handlePaginationClick = async (index) => {
+    try {
+      const data = await getTechnicians(
+        currentUser.token,
+        index + 1,
+        10,
+        searchRef.current.value
+      );
+      setCurrPage(index);
+      setData(data);
+    } catch (ex) {
+      setError(ex.message);
+    }
+  };
 
   return (
-    <>
-      {error ? (
-        <div
-          className="col-12 d-flex justify-content-center"
-          style={{ marginTop: "30px" }}
-        >
-          <h1>{error}</h1>
-        </div>
-      ) : (
-        <CommonTable
-          loading={loading}
-          title="Technicians"
-          linkAdd="/addtechnician"
-          btnName="Add Technician"
-          handleSearch={handleSearch}
-          customerTableHead={customerTableHead}
-          filterData={filterAllTechnicians}
-          dataShow={dataShow}
-          setDataShow={setDataShow}
-          renderBody={renderBody}
+    <WrapperComponent error={error} loading={loading}>
+      <>
+        <TopTitle
+          title="Technician"
+          linkAdd="/addtechnicians"
+          btnName="Add Technicians"
         />
-      )}
-    </>
+        <Searchbar hanldeSearch={hanldeSearch} searchRef={searchRef} />
+        <FullTable
+          currPage={currPage}
+          data={data}
+          customerTableHead={customerTableHead}
+          filterData={filterData}
+          handlePaginationClick={handlePaginationClick}
+          linkAddress="/updatetechnicians"
+        />
+      </>
+    </WrapperComponent>
   );
 };
 
