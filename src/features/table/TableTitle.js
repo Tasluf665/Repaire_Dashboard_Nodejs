@@ -2,7 +2,7 @@ import React from "react";
 import { MDBBtn } from "mdb-react-ui-kit";
 import { Link } from "react-router-dom";
 
-export default function TopTitle(props) {
+export default function TableTitle(props) {
   return (
     <div className="d-flex justify-content-between">
       <h2 className="page-header">{props.title}</h2>

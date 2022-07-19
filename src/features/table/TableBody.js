@@ -2,20 +2,14 @@ import React from "react";
 import "./table.css";
 import { Link } from "react-router-dom";
 
-export default function Table({
+import { get_td_item } from "../../utils/table/get_td_item";
+
+export default function TableBody({
   tableHeader,
   tableBodyData,
   currPage,
   linkAddress,
 }) {
-  const getItem = (item) => {
-    const arr = [];
-    for (const key in item) {
-      arr.push(<td>{item[key]}</td>);
-    }
-    return arr;
-  };
-
   return (
     <div>
       <table class="table">
@@ -31,7 +25,7 @@ export default function Table({
             return (
               <tr>
                 <th scope="row">{currPage * 10 + index + 1}</th>
-                {getItem(item)}
+                {get_td_item(item)}
                 <td>
                   <Link
                     to={{

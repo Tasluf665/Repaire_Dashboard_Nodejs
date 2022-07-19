@@ -1,7 +1,7 @@
 import React from "react";
 import { Form } from "react-bootstrap";
 
-export default function Searchbar(props) {
+export default function TableSearchbar(props) {
   return (
     <div className="col-12 d-flex justify-content-center">
       <Form.Control
@@ -10,7 +10,6 @@ export default function Searchbar(props) {
         name="search"
         onChange={props.hanldeSearch}
         style={styles.inputStyle}
-        ref={props.searchRef}
       />
     </div>
   );

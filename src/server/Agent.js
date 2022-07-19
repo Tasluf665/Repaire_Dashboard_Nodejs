@@ -211,7 +211,5 @@ export const getAgents = async (jwtToken, pageNumber, pageSize, name) => {
     }
   );
   const data = await res.json();
-
-  if (!data.error) return data;
-  else throw new Error(data.error);
+  return data;
 };

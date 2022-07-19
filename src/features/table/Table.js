@@ -1,10 +1,10 @@
 import React from "react";
 
-import Table from "./Table";
+import TableBody from "./TableBody";
 import TableCardBody from "./TableCardBody";
 import TablePagination from "./TablePagination";
 
-export default function FullTable({
+export default function Table({
   currPage,
   data,
   customerTableHead,
@@ -15,7 +15,7 @@ export default function FullTable({
   return (
     <>
       <TableCardBody>
-        <Table
+        <TableBody
           tableHeader={customerTableHead}
           tableBodyData={filterData(data.data)}
           currPage={currPage}

@@ -1,23 +1,14 @@
 import React from "react";
+import { getRange } from "../../utils/table/getRange";
 
 export default function TablePagination({
   count,
   currPage,
   handlePaginationClick,
 }) {
-  const getRange = () => {
-    let pages = 1;
-
-    let page = Math.floor(count / 10);
-    pages = count % 10 === 0 ? page : page + 1;
-    let range = [...Array(pages).keys()];
-
-    return range;
-  };
-
   return (
     <div className="table__pagination">
-      {getRange().map((item, index) => (
+      {getRange(count).map((item, index) => (
         <div
           key={index}
           className={`table__pagination-item ${
