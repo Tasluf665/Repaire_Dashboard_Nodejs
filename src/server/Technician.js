@@ -94,15 +94,19 @@ export const handleSubmit = async (
 
 //Without any backend
 
-export const getTechnicians = async (accessToken) => {
+export const getTechnicians = async (jwtToken, pageNumber, pageSize, name) => {
   const res = await fetch(
-    `https://repair-45f86-default-rtdb.asia-southeast1.firebasedatabase.app/technician.json?auth=${accessToken}`
+    name
+      ? `http://localhost:3001/api/technicians?pageNumber=${pageNumber}&pageSize=${pageSize}&name=${name}`
+      : `http://localhost:3001/api/technicians?pageNumber=${pageNumber}&pageSize=${pageSize}`,
+    {
+      headers: {
+        "x-auth-token": jwtToken,
+      },
+    }
   );
   const data = await res.json();
 
-  if (data ? data.error : false) {
-    return data;
-  }
-
-  return objectToArray(data);
+  if (!data.error) return data;
+  else throw new Error(data.error);
 };
