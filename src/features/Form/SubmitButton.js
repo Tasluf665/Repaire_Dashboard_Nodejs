@@ -1,7 +1,7 @@
 import React from "react";
 import { Button } from "react-bootstrap";
 
-export default function CenterButton(props) {
+export default function SubmitButton(props) {
   return (
     <div
       className="col-12 d-flex justify-content-center"

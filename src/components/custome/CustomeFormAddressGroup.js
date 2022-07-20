@@ -1,54 +1,50 @@
 import React from "react";
-import { Form } from "react-bootstrap";
-import { getRegion, getAddressList } from "../../assets/Address/address";
 
-import CustomeFormGroup from "./CustomeFormGroup";
+import useAddress from "../../hooks/useAddress";
+import Select from "../../features/Form/Select";
 
 export default function CustomeFormAddressGroup(props) {
+  const { region, getAddress } = useAddress();
   const [city, setCity] = React.useState([]);
   const [area, setArea] = React.useState([]);
 
-  const getOptions = (array) => {
-    return array.map((item) => (
-      <option id={item.id} key={item.id}>
-        {item.displayName}
-      </option>
-    ));
-  };
-
   return (
     <>
-      <CustomeFormGroup title="Region">
-        <Form.Select
-          aria-label="Default select example"
-          name="region"
-          required
-          onChange={(event) => setCity(getAddressList(event.target.value))}
-        >
-          {getOptions(getRegion())}
-        </Form.Select>
-      </CustomeFormGroup>
+      <Select
+        title="Region"
+        name="region"
+        required={true}
+        onChange={(event) => {
+          let index = event.target.selectedIndex;
+          let optionElement = event.target.childNodes[index];
+          let id = optionElement.getAttribute("id");
+          getAddress(setCity, id);
+          setArea([]);
+        }}
+        data={region}
+      />
 
-      <CustomeFormGroup title="City">
-        <Form.Select
-          aria-label="Default select example"
-          name="city"
-          disabled={city.length === 0}
-          onChange={(event) => setArea(getAddressList(event.target.value))}
-        >
-          {getOptions(city)}
-        </Form.Select>
-      </CustomeFormGroup>
+      <Select
+        title="City"
+        name="city"
+        required={true}
+        disabled={city.length === 0}
+        onChange={(event) => {
+          let index = event.target.selectedIndex;
+          let optionElement = event.target.childNodes[index];
+          let id = optionElement.getAttribute("id");
+          getAddress(setArea, id);
+        }}
+        data={city}
+      />
 
-      <CustomeFormGroup title="Area">
-        <Form.Select
-          aria-label="Default select example"
-          name="area"
-          disabled={area.length === 0}
-        >
-          {getOptions(area)}
-        </Form.Select>
-      </CustomeFormGroup>
+      <Select
+        title="Area"
+        name="area"
+        required={true}
+        disabled={area.length === 0}
+        data={area}
+      />
     </>
   );
 }

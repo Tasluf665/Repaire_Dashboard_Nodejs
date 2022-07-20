@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 
 import { handleSubmit } from "../../server/Technician";
-import CommonAddPage from "../../components/custome/CommonAddPage";
+import FormPage from "../../features/Form/FormPage";
 import CustomeSpinner from "../../components/custome/CustomeSpinner";
 import CustomeAgentDropdown from "../../components/custome/CustomeAgentDropdown";
 import { useAuth } from "../../context/AuthContext";
@@ -45,9 +45,9 @@ export default function AddTechnician() {
               <h1>{error}</h1>
             </div>
           ) : (
-            <CommonAddPage title="Technician" handleSubmit={handleSubmit}>
+            <FormPage title="Technician" handleSubmit={handleSubmit}>
               <CustomeAgentDropdown allAgents={allAgents} />
-            </CommonAddPage>
+            </FormPage>
           )}
         </>
       )}

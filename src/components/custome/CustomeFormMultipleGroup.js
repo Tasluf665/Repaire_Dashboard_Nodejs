@@ -1,7 +1,6 @@
 import React from "react";
 import { Form } from "react-bootstrap";
-import CustomeFormGroup from "./CustomeFormGroup";
-import CustomeInput from "./CustomeInput";
+import Input from "../../features/Form/Input";
 
 export default function CustomeFormMultipleGroup({
   name,
@@ -11,29 +10,33 @@ export default function CustomeFormMultipleGroup({
 }) {
   return (
     <>
-      <CustomeInput
+      <Input
         title="Name"
         defaultValue={name ? name : null}
+        name="name"
         type="text"
+        required={true}
       />
-      <CustomeInput
+      <Input
         title="Email"
         defaultValue={email ? email : null}
+        name="email"
         type="text"
+        required={true}
       />
-      <CustomeInput
+      <Input
         title="Phone"
         defaultValue={phone ? phone : null}
+        name="phone"
+        type="text"
+        required={true}
+      />
+      <Input
+        title="Whatsapp Number"
+        defaultValue={whatsappNum ? whatsappNum : null}
+        name="whatsappNum"
         type="text"
       />
-      <CustomeFormGroup title="Whatsapp Number">
-        <Form.Control
-          type="number"
-          placeholder="Enter Whatsapp Number"
-          name="whatsappNum"
-          defaultValue={whatsappNum ? whatsappNum : null}
-        />
-      </CustomeFormGroup>
     </>
   );
 }

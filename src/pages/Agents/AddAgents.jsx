@@ -1,8 +1,8 @@
 import React from "react";
 
 import { addAgent } from "../../server/Agent";
-import CommonAddPage from "../../components/custome/CommonAddPage";
+import FormPage from "../../features/Form/FormPage";
 
 export default function AddAgents() {
-  return <CommonAddPage title="Agent" handleSubmit={addAgent} />;
+  return <FormPage title="Agent" handleSubmit={addAgent} />;
 }
