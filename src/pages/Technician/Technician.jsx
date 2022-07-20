@@ -23,7 +23,14 @@ const Technician = () => {
   const filterData = (data) => {
     const filter = [];
     data.map((item) => {
-      let temp = _.pick(item, ["name", "phone", "region", "city", "area"]);
+      let temp = _.pick(item, [
+        "_id",
+        "name",
+        "phone",
+        "region",
+        "city",
+        "area",
+      ]);
       temp.agent = item.agent.name;
       filter.push(temp);
     });
@@ -34,7 +41,7 @@ const Technician = () => {
     <WrapperComponent error={state.error} loading={state.loading}>
       <TableTitle
         title="Technicians"
-        linkAdd="/addtechnicians"
+        linkAdd="/addtechnician"
         btnName="Add Technicians"
       />
       <TableSearchbar hanldeSearch={hanldeSearch} />

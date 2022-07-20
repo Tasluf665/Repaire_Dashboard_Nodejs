@@ -24,7 +24,15 @@ export default function Agents() {
     const filter = [];
     data.map((item) => {
       filter.push(
-        _.pick(item, ["name", "phone", "region", "city", "area", "location"])
+        _.pick(item, [
+          "_id",
+          "name",
+          "phone",
+          "region",
+          "city",
+          "area",
+          "location",
+        ])
       );
     });
     return filter;

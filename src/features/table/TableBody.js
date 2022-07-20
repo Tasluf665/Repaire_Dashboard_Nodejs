@@ -30,7 +30,7 @@ export default function TableBody({
                   <Link
                     to={{
                       pathname: linkAddress,
-                      state: item,
+                      state: item._id,
                     }}
                     style={{ textDecoration: "none" }}
                   >

@@ -93,7 +93,7 @@ export const handleSubmit = async (
 
 //Without any backend
 
-export const addAgent = async (event, setValidated, jwtToken) => {
+export const addAgent = async (event, setValidated, addToServer) => {
   const form = event.currentTarget;
   event.preventDefault();
 
@@ -106,41 +106,20 @@ export const addAgent = async (event, setValidated, jwtToken) => {
   } else {
     const data = {
       name: event.target.name.value,
-      email: event.target.email.value,
+      email:
+        event.target.email.value === "" ? undefined : event.target.email.value,
       phone: event.target.phone.value,
-      whatsappNumber: event.target.whatsappNum.value,
+      whatsappNumber:
+        event.target.whatsappNum.value === ""
+          ? undefined
+          : event.target.whatsappNum.value,
       region: event.target.region.value,
       city: event.target.city.value,
       area: event.target.area.value,
       location: event.target.location.value,
     };
 
-    let response = await fetch("http://localhost:3001/api/agents", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "x-auth-token": jwtToken,
-      },
-      body: JSON.stringify(data),
-    });
-
-    let result = await response.json();
-
-    if (result.error) {
-      Swal.fire({
-        icon: "error",
-        title: "Oops...",
-        text: "Something went wrong!",
-      });
-    } else {
-      Swal.fire({
-        position: "center",
-        icon: "success",
-        title: "Agent is successfully added",
-        showConfirmButton: false,
-        timer: 1500,
-      });
-    }
+    addToServer("agents", data);
   }
 
   setValidated(true);
