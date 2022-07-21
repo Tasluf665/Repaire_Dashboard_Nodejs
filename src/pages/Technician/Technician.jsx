@@ -51,7 +51,7 @@ const Technician = () => {
         customerTableHead={TechnicianTableHead}
         filterData={filterData}
         handlePaginationClick={handlePaginationClick}
-        linkAddress="/updatetechnicians"
+        linkAddress="/updatetechnician"
       />
     </WrapperComponent>
   );

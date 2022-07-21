@@ -1,88 +1,141 @@
 import React, { useState } from "react";
 
-import CustomeInput from "../../components/custome/CustomeInput";
-import { handleSubmit } from "../../server/Technician";
-import CustomeSpinner from "../../components/custome/CustomeSpinner";
-import CustomeAgentDropdown from "../../components/custome/CustomeAgentDropdown";
-import CommonUpdatePage from "../../components/custome/CommonUpdatePage";
+import UpdateFormPage from "../../features/Form/UpdateFormPage";
 import { useAuth } from "../../context/AuthContext";
-import { getAgents } from "../../server/Agent";
+import WrapperComponent from "../../components/custome/WrapperComponent";
+import useAddUpdateToDB from "../../hooks/useAddUpdateToDB";
+import { reducer, initialState } from "../../reducers/AddDataReducer";
+import Select from "../../features/Form/Select";
+import Input from "../../features/Form/Input";
 
 export default function UpdateTechnician(props) {
+  const [state, dispatch] = React.useReducer(reducer, initialState);
   const [edit, setEdit] = useState(false);
-  const [agent, setAgent] = React.useState();
-  const [allAgents, setAllAgents] = React.useState();
-  const [loading, setLoading] = React.useState(true);
-  const { currentUser, logout } = useAuth();
-  const [error, setError] = React.useState();
+
+  const technicianId = props.location.state;
+  const { currentUser } = useAuth();
+  const { updateToServer } = useAddUpdateToDB(dispatch);
 
   React.useEffect(() => {
-    const getData = async () => {
-      const accessToken = await currentUser.accessToken;
-      const allAgents = await getAgents(accessToken);
-
-      if (allAgents.error) {
-        if (allAgents.error === "Auth token is expired") {
-          logout();
-        }
-        setError(allAgents.error);
-      } else {
-        const targetAgent = allAgents.find(
-          (agent) => agent.key === props.location.state.agentId
+    const getTechnician = async () => {
+      try {
+        let res = await fetch(
+          `http://localhost:3001/api/technicians/${technicianId}`,
+          {
+            headers: {
+              "x-auth-token": currentUser.token,
+            },
+          }
         );
-        setAllAgents(allAgents);
-        setAgent(targetAgent);
-        setLoading(false);
+        const technician = await res.json();
+
+        res = await fetch(`http://localhost:3001/api/agents`, {
+          headers: {
+            "x-auth-token": currentUser.token,
+          },
+        });
+        const data = await res.json();
+        const allAgents = data.data;
+
+        if (!technician.error && !allAgents.error) {
+          dispatch({
+            type: "Technician_And_Agent_Fetch",
+            value: { technician, allAgents },
+          });
+        } else {
+          dispatch({
+            type: "Error",
+            value: technician.error ? technician.error : allAgents.error,
+          });
+        }
+      } catch (ex) {
+        dispatch({ type: "Error", value: ex.message });
       }
     };
-    getData();
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
+    getTechnician();
+  }, []);
+
+  const updateTechnician = async (event, setValidated) => {
+    const form = event.currentTarget;
+    event.preventDefault();
+
+    if (
+      form.checkValidity() === false ||
+      event.target.city.value === "" ||
+      event.target.area.value === ""
+    ) {
+      event.stopPropagation();
+    } else {
+      let index = event.target.agent.selectedIndex;
+      let optionElement = event.target.agent.childNodes[index];
+      let agentId = optionElement.getAttribute("id");
+
+      const data = {
+        name: event.target.name.value,
+        email:
+          event.target.email.value === ""
+            ? undefined
+            : event.target.email.value,
+        phone: event.target.phone.value,
+        whatsappNumber:
+          event.target.whatsappNum.value === ""
+            ? undefined
+            : event.target.whatsappNum.value,
+        region: event.target.region.value,
+        city: event.target.city.value,
+        area: event.target.area.value,
+        location: event.target.location.value,
+        agentId: agentId,
+      };
+
+      updateToServer("technicians", data, technicianId);
+    }
+
+    setValidated(true);
+  };
+
+  const getOptions = (array) => {
+    return array.map((item) => (
+      <option id={item._id} key={item._id}>
+        {item.name + ", " + item.area}
+      </option>
+    ));
+  };
   return (
-    <div>
-      {loading ? (
-        <CustomeSpinner />
-      ) : (
-        <>
-          {error ? (
-            <div
-              className="col-12 d-flex justify-content-center"
-              style={{ marginTop: "30px" }}
-            >
-              <h1>{error}</h1>
-            </div>
-          ) : (
-            <CommonUpdatePage
-              title="Agent"
-              location={props.location}
-              handleSubmit={handleSubmit}
-              edit={edit}
-              setEdit={setEdit}
-            >
-              {edit ? (
-                <CustomeAgentDropdown allAgents={allAgents} />
-              ) : (
-                <CustomeInput
-                  title="Agent"
-                  cutomeClass="col-12 mb-3"
-                  defaultValue={
-                    agent
-                      ? agent.name +
-                        ", " +
-                        agent.phone +
-                        ", " +
-                        agent.region +
-                        ", " +
-                        agent.city
-                      : null
-                  }
-                  type="text"
-                />
-              )}
-            </CommonUpdatePage>
-          )}
-        </>
-      )}
-    </div>
+    <WrapperComponent error={state.error} loading={state.loading}>
+      <UpdateFormPage
+        title="Agent"
+        data={state.technician}
+        handleSubmit={updateTechnician}
+        edit={edit}
+        setEdit={setEdit}
+        dispatch={dispatch}
+      >
+        {edit ? (
+          <Select
+            customeClass="col-12 mb-3"
+            title="Agent"
+            name="agent"
+            required={true}
+            options={getOptions(state.allAgents)}
+          />
+        ) : (
+          <Input
+            title="Agent"
+            defaultValue={
+              state.technician
+                ? state.technician.agent.name +
+                  ", " +
+                  state.technician.agent.city
+                : null
+            }
+            name="agent"
+            type="text"
+            cutomeClass="col-12 mb-3"
+          />
+        )}
+      </UpdateFormPage>
+    </WrapperComponent>
   );
 }

@@ -4,24 +4,32 @@ import FormPage from "../../features/Form/FormPage";
 import useAddUpdateToDB from "../../hooks/useAddUpdateToDB";
 import Select from "../../features/Form/Select";
 import { useAuth } from "../../context/AuthContext";
-import { fetchData } from "../../utils/table/fetchData";
+import WrapperComponent from "../../components/custome/WrapperComponent";
+import { reducer, initialState } from "../../reducers/AddDataReducer";
 
 export default function AddTechnician() {
-  const { addToServer } = useAddUpdateToDB();
-  const [allAgents, setAllAgents] = React.useState([]);
+  const [state, dispatch] = React.useReducer(reducer, initialState);
+  const { addToServer } = useAddUpdateToDB(dispatch);
   const { currentUser } = useAuth();
 
   React.useEffect(() => {
     const getAllAgent = async () => {
-      const res = await fetch(`http://localhost:3001/api/agents`, {
-        headers: {
-          "x-auth-token": currentUser.token,
-        },
-      });
-
-      const data = await fetchData(currentUser.token, "agents");
-      const agents = data.data;
-      setAllAgents(agents);
+      try {
+        const res = await fetch(`http://localhost:3001/api/agents`, {
+          headers: {
+            "x-auth-token": currentUser.token,
+          },
+        });
+        const data = await res.json();
+        if (data.error) {
+          dispatch({ type: "Error", value: data.error });
+        } else {
+          const agents = data.data;
+          dispatch({ type: "AddAgents", value: agents });
+        }
+      } catch (ex) {
+        dispatch({ type: "Error", value: ex.message });
+      }
     };
 
     getAllAgent();
@@ -74,14 +82,20 @@ export default function AddTechnician() {
     ));
   };
   return (
-    <FormPage title="Technician" handleSubmit={addTechnician}>
-      <Select
-        customeClass="col-12 mb-3"
-        title="Agent"
-        name="agent"
-        required={true}
-        options={getOptions(allAgents)}
-      />
-    </FormPage>
+    <WrapperComponent error={state.error} loading={state.loading}>
+      <FormPage
+        title="Technician"
+        handleSubmit={addTechnician}
+        dispatch={dispatch}
+      >
+        <Select
+          customeClass="col-12 mb-3"
+          title="Agent"
+          name="agent"
+          required={true}
+          options={getOptions(state.allAgents)}
+        />
+      </FormPage>
+    </WrapperComponent>
   );
 }

@@ -3,8 +3,8 @@ import React from "react";
 import Select from "./Select";
 import useAddress from "../../hooks/useAddress";
 
-export default function AddressInputs() {
-  const { region, getAddress } = useAddress();
+export default function AddressInputs(props) {
+  const { region, getAddress } = useAddress(props.dispatch);
   const [city, setCity] = React.useState([]);
   const [area, setArea] = React.useState([]);
 

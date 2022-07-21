@@ -22,7 +22,7 @@ export default function FormPage(props) {
           }}
         >
           <InputGroup />
-          <AddressInputs />
+          <AddressInputs dispatch={props.dispatch} />
 
           {props.children}
           <SubmitButton title="Submit" />

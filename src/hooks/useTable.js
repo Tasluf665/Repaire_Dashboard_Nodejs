@@ -7,14 +7,18 @@ const useTable = (linkName, pageNumber, pageSize, dispatch, state) => {
 
   React.useEffect(() => {
     const getData = async () => {
-      const data = await fetchData(
-        currentUser.token,
-        linkName,
-        pageNumber,
-        pageSize
-      );
-      if (!data.error) dispatch({ type: "AddData", data: data });
-      else dispatch({ type: "Error", value: data.error });
+      try {
+        const data = await fetchData(
+          currentUser.token,
+          linkName,
+          pageNumber,
+          pageSize
+        );
+        if (!data.error) dispatch({ type: "AddData", data: data });
+        else dispatch({ type: "Error", value: data.error });
+      } catch (ex) {
+        dispatch({ type: "Error", value: ex.message });
+      }
     };
 
     getData();
@@ -30,12 +34,14 @@ const useTable = (linkName, pageNumber, pageSize, dispatch, state) => {
         pageSize,
         search
       );
-      dispatch({
-        type: "Search",
-        currPage: 0,
-        data: data,
-        search: event.target.value,
-      });
+      if (!data.error) {
+        dispatch({
+          type: "Search",
+          currPage: 0,
+          data: data,
+          search: event.target.value,
+        });
+      } else dispatch({ type: "Error", value: data.error });
     } catch (ex) {
       dispatch({ type: "Error", value: ex.message });
     }
@@ -51,7 +57,9 @@ const useTable = (linkName, pageNumber, pageSize, dispatch, state) => {
         state.search
       );
 
-      dispatch({ type: "Pagination", currPage: index, data: data });
+      if (!data.error)
+        dispatch({ type: "Pagination", currPage: index, data: data });
+      else dispatch({ type: "Error", value: data.error });
     } catch (ex) {
       dispatch({ type: "Error", value: ex.message });
     }

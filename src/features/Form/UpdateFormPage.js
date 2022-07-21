@@ -62,7 +62,11 @@ export default function UpdateFormPage(props) {
             location={props.data.location}
           />
 
-          {props.edit ? <AddressInputs /> : detailsComponent()}
+          {props.edit ? (
+            <AddressInputs dispatch={props.dispatch} />
+          ) : (
+            detailsComponent()
+          )}
 
           {props.children}
           {props.edit ? <SubmitButton title="Update" /> : null}

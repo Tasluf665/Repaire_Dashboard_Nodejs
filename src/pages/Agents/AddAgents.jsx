@@ -1,10 +1,14 @@
 import React from "react";
+import WrapperComponent from "../../components/custome/WrapperComponent";
 
 import FormPage from "../../features/Form/FormPage";
 import useAddUpdateToDB from "../../hooks/useAddUpdateToDB";
 
+import { reducer, initialState } from "../../reducers/AddDataReducer";
+
 export default function AddAgents() {
-  const { addToServer } = useAddUpdateToDB();
+  const [state, dispatch] = React.useReducer(reducer, initialState);
+  const { addToServer } = useAddUpdateToDB(dispatch);
 
   const addAgent = async (event, setValidated) => {
     const form = event.currentTarget;
@@ -40,5 +44,9 @@ export default function AddAgents() {
     setValidated(true);
   };
 
-  return <FormPage title="Agent" handleSubmit={addAgent} />;
+  return (
+    <WrapperComponent error={state.error} loading={false}>
+      <FormPage title="Agent" handleSubmit={addAgent} dispatch={dispatch} />
+    </WrapperComponent>
+  );
 }

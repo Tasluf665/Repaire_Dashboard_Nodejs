@@ -7,7 +7,7 @@ import AddAgents from "../pages/Agents/AddAgents";
 import UpdateAgents from "../pages/Agents/UpdateAgents";
 import Technician from "../pages/Technician/Technician";
 import AddTechnician from "../pages/Technician/AddTechnician";
-// import UpdateTechnician from "../pages/Technician/UpdateTechnician";
+import UpdateTechnician from "../pages/Technician/UpdateTechnician";
 // import Orders from "../pages/Orders/Orders";
 // import UpdateOrder from "../pages/Orders/UpdateOrder";
 import Login from "../pages/Auth/Login";
@@ -27,8 +27,8 @@ const Routes = () => {
       <PrivateRoute path="/updateagents" component={UpdateAgents} />
       <PrivateRoute path="/technician" component={Technician} />
       <PrivateRoute path="/addtechnician" component={AddTechnician} />
-      {/*<PrivateRoute path="/updatetechnician" component={UpdateTechnician} />
-      <PrivateRoute path="/orders" component={Orders} />
+      <PrivateRoute path="/updatetechnician" component={UpdateTechnician} />
+      {/*<PrivateRoute path="/orders" component={Orders} />
       <PrivateRoute path="/updateorder" component={UpdateOrder} /> */}
       <Route path={"/login"}>
         {currentUser ? <Redirect to="/" /> : <Login />}
