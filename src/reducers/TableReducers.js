@@ -1,3 +1,8 @@
+export const ADD_DATA = "APP_DATA";
+export const ERROR = "ERROR";
+export const SEARCH = "SEARCH";
+export const PAGINATION = "PAGINATION";
+
 export const initialState = {
   loading: true,
   error: null,
@@ -8,11 +13,11 @@ export const initialState = {
 
 export const reducer = (state, action) => {
   switch (action.type) {
-    case "AddData":
+    case ADD_DATA:
       return { ...state, data: action.data, loading: false };
-    case "Error":
+    case ERROR:
       return { ...state, error: action.value };
-    case "Search":
+    case SEARCH:
       return {
         ...state,
         search: action.search,
@@ -20,7 +25,7 @@ export const reducer = (state, action) => {
         currPage: action.currPage,
         loading: false,
       };
-    case "Pagination":
+    case PAGINATION:
       return {
         ...state,
         data: action.data,

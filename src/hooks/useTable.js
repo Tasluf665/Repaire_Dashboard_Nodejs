@@ -1,6 +1,7 @@
 import React from "react";
 import { useAuth } from "../context/AuthContext";
 import { fetchData } from "../utils/table/fetchData";
+import { ADD_DATA, ERROR, SEARCH, PAGINATION } from "../reducers/TableReducers";
 
 const useTable = (linkName, pageNumber, pageSize, dispatch, state) => {
   const { currentUser } = useAuth();
@@ -14,10 +15,10 @@ const useTable = (linkName, pageNumber, pageSize, dispatch, state) => {
           pageNumber,
           pageSize
         );
-        if (!data.error) dispatch({ type: "AddData", data: data });
-        else dispatch({ type: "Error", value: data.error });
+        if (!data.error) dispatch({ type: ADD_DATA, data: data });
+        else dispatch({ type: ERROR, value: data.error });
       } catch (ex) {
-        dispatch({ type: "Error", value: ex.message });
+        dispatch({ type: ERROR, value: ex.message });
       }
     };
 
@@ -36,14 +37,14 @@ const useTable = (linkName, pageNumber, pageSize, dispatch, state) => {
       );
       if (!data.error) {
         dispatch({
-          type: "Search",
+          type: SEARCH,
           currPage: 0,
           data: data,
           search: event.target.value,
         });
-      } else dispatch({ type: "Error", value: data.error });
+      } else dispatch({ type: ERROR, value: data.error });
     } catch (ex) {
-      dispatch({ type: "Error", value: ex.message });
+      dispatch({ type: ERROR, value: ex.message });
     }
   };
 
@@ -58,10 +59,10 @@ const useTable = (linkName, pageNumber, pageSize, dispatch, state) => {
       );
 
       if (!data.error)
-        dispatch({ type: "Pagination", currPage: index, data: data });
-      else dispatch({ type: "Error", value: data.error });
+        dispatch({ type: PAGINATION, currPage: index, data: data });
+      else dispatch({ type: ERROR, value: data.error });
     } catch (ex) {
-      dispatch({ type: "Error", value: ex.message });
+      dispatch({ type: ERROR, value: ex.message });
     }
   };
 
