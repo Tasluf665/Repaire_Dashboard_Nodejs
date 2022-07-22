@@ -1,6 +1,8 @@
 import React from "react";
 import { useAuth } from "../context/AuthContext";
 
+import { ERROR } from "../reducers/AgentReducer";
+
 export default function useAddress(dispatch) {
   const { currentUser } = useAuth();
   const [region, setRegion] = React.useState([]);
@@ -20,9 +22,9 @@ export default function useAddress(dispatch) {
       const data = await res.json();
       if (!data.error) {
         setData(data);
-      } else dispatch({ type: "Error", value: data.error });
+      } else dispatch({ type: ERROR, value: data.error });
     } catch (ex) {
-      dispatch({ type: "Error", value: ex.message });
+      dispatch({ type: ERROR, value: ex.message });
     }
   };
 

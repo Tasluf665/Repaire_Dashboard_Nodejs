@@ -1,12 +1,17 @@
-import React from "react";
+import _ from "lodash";
 import Swal from "sweetalert2";
 
 import { useAuth } from "../context/AuthContext";
+import {
+  DATA_ADDED_TO_SERVER,
+  ERROR,
+  DATA_UPDATED_TO_SERVER,
+} from "../reducers/AgentReducer";
 
 export default function useAddUpdateToDB(dispatch) {
   const { currentUser } = useAuth();
 
-  const showResultAnimation = (result) => {
+  const showResultAnimation = (result, linkName) => {
     if (result.error) {
       Swal.fire({
         icon: "error",
@@ -17,7 +22,7 @@ export default function useAddUpdateToDB(dispatch) {
       Swal.fire({
         position: "center",
         icon: "success",
-        title: "Agent is successfully updated",
+        title: `${_.startCase(linkName)} is successfully updated`,
         showConfirmButton: false,
         timer: 1500,
       });
@@ -40,16 +45,17 @@ export default function useAddUpdateToDB(dispatch) {
 
       let result = await response.json();
       if (!result.error) {
-        dispatch({ type: "DataAddedToServer" });
-        showResultAnimation(result);
-      } else dispatch({ type: "Error", value: result.error });
+        dispatch({ type: DATA_UPDATED_TO_SERVER, value: result });
+        showResultAnimation(result, linkName);
+      } else dispatch({ type: ERROR, value: result.error });
     } catch (ex) {
-      dispatch({ type: "Error", value: ex.message });
+      dispatch({ type: ERROR, value: ex.message });
     }
   };
 
   const addToServer = async (linkName, data) => {
     try {
+      console.log(JSON.stringify(data));
       let response = await fetch(`http://localhost:3001/api/${linkName}`, {
         method: "POST",
         headers: {
@@ -62,11 +68,12 @@ export default function useAddUpdateToDB(dispatch) {
       let result = await response.json();
 
       if (!result.error) {
-        dispatch({ type: "DataAddedToServer" });
-        showResultAnimation(result);
-      } else dispatch({ type: "Error", value: result.error });
+        dispatch({ type: DATA_ADDED_TO_SERVER });
+        showResultAnimation(result, linkName);
+      } else dispatch({ type: ERROR, value: result.error });
     } catch (ex) {
-      dispatch({ type: "Error", value: ex.message });
+      console.log("In Ex");
+      dispatch({ type: ERROR, value: ex.message });
     }
   };
 

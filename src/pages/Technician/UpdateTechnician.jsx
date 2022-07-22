@@ -4,7 +4,13 @@ import UpdateFormPage from "../../features/Form/UpdateFormPage";
 import { useAuth } from "../../context/AuthContext";
 import WrapperComponent from "../../components/custome/WrapperComponent";
 import useAddUpdateToDB from "../../hooks/useAddUpdateToDB";
-import { reducer, initialState } from "../../reducers/AddDataReducer";
+import {
+  reducer,
+  initialState,
+  ERROR,
+  LOADING,
+  FETCH_ALL_AGENTS_AND_TECHNICIANS_FROM_SERVER,
+} from "../../reducers/TechnicianReducer";
 import Select from "../../features/Form/Select";
 import Input from "../../features/Form/Input";
 
@@ -17,7 +23,7 @@ export default function UpdateTechnician(props) {
   const { updateToServer } = useAddUpdateToDB(dispatch);
 
   React.useEffect(() => {
-    const getTechnician = async () => {
+    const getDataFromServer = async () => {
       try {
         let res = await fetch(
           `http://localhost:3001/api/technicians/${technicianId}`,
@@ -39,21 +45,21 @@ export default function UpdateTechnician(props) {
 
         if (!technician.error && !allAgents.error) {
           dispatch({
-            type: "Technician_And_Agent_Fetch",
+            type: FETCH_ALL_AGENTS_AND_TECHNICIANS_FROM_SERVER,
             value: { technician, allAgents },
           });
         } else {
           dispatch({
-            type: "Error",
+            type: ERROR,
             value: technician.error ? technician.error : allAgents.error,
           });
         }
       } catch (ex) {
-        dispatch({ type: "Error", value: ex.message });
+        dispatch({ type: ERROR, value: ex.message });
       }
     };
 
-    getTechnician();
+    getDataFromServer();
   }, []);
 
   const updateTechnician = async (event, setValidated) => {
@@ -89,6 +95,7 @@ export default function UpdateTechnician(props) {
         agentId: agentId,
       };
 
+      dispatch({ type: LOADING });
       updateToServer("technicians", data, technicianId);
     }
 

@@ -5,7 +5,13 @@ import useAddUpdateToDB from "../../hooks/useAddUpdateToDB";
 import Select from "../../features/Form/Select";
 import { useAuth } from "../../context/AuthContext";
 import WrapperComponent from "../../components/custome/WrapperComponent";
-import { reducer, initialState } from "../../reducers/AddDataReducer";
+import {
+  reducer,
+  initialState,
+  FETCH_ALL_AGENTS_FROM_SERVER,
+  ERROR,
+  LOADING,
+} from "../../reducers/TechnicianReducer";
 
 export default function AddTechnician() {
   const [state, dispatch] = React.useReducer(reducer, initialState);
@@ -22,13 +28,13 @@ export default function AddTechnician() {
         });
         const data = await res.json();
         if (data.error) {
-          dispatch({ type: "Error", value: data.error });
+          dispatch({ type: ERROR, value: data.error });
         } else {
           const agents = data.data;
-          dispatch({ type: "AddAgents", value: agents });
+          dispatch({ type: FETCH_ALL_AGENTS_FROM_SERVER, value: agents });
         }
       } catch (ex) {
-        dispatch({ type: "Error", value: ex.message });
+        dispatch({ type: ERROR, value: ex.message });
       }
     };
 
@@ -68,6 +74,7 @@ export default function AddTechnician() {
         agentId: agentId,
       };
 
+      dispatch({ type: LOADING });
       addToServer("technicians", data);
     }
 

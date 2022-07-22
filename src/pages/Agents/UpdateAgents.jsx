@@ -4,7 +4,12 @@ import UpdateFormPage from "../../features/Form/UpdateFormPage";
 import { useAuth } from "../../context/AuthContext";
 import WrapperComponent from "../../components/custome/WrapperComponent";
 import useAddUpdateToDB from "../../hooks/useAddUpdateToDB";
-import { reducer, initialState } from "../../reducers/AddDataReducer";
+import { reducer, initialState } from "../../reducers/AgentReducer";
+import {
+  ERROR,
+  FETCH_DATA_FROM_SERVER,
+  LOADING,
+} from "../../reducers/AgentReducer";
 
 export default function UpdateAgents(props) {
   const [state, dispatch] = React.useReducer(reducer, initialState);
@@ -25,12 +30,12 @@ export default function UpdateAgents(props) {
         const data = await res.json();
 
         if (data.error) {
-          dispatch({ type: "Error", value: data.error });
+          dispatch({ type: ERROR, value: data.error });
         } else {
-          dispatch({ type: "AgentFetch", value: data });
+          dispatch({ type: FETCH_DATA_FROM_SERVER, value: data });
         }
       } catch (ex) {
-        dispatch({ type: "Error", value: ex.message });
+        dispatch({ type: ERROR, value: ex.message });
       }
     };
 
@@ -59,6 +64,7 @@ export default function UpdateAgents(props) {
         location: event.target.location.value,
       };
 
+      dispatch({ type: LOADING });
       updateToServer("agents", data, agentId);
     }
 
