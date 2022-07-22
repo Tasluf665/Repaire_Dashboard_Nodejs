@@ -12,9 +12,4 @@ import Layout from "./components/layout/Layout";
 
 document.title = "Repair";
 
-ReactDOM.render(
-  <React.StrictMode>
-    <Layout />
-  </React.StrictMode>,
-  document.getElementById("root")
-);
+ReactDOM.render(<Layout />, document.getElementById("root"));

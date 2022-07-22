@@ -39,7 +39,7 @@ export default function AddTechnician() {
     };
 
     getAllAgent();
-  }, []);
+  }, [currentUser.token]);
 
   const addTechnician = async (event, setValidated) => {
     const form = event.currentTarget;

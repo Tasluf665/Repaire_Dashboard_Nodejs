@@ -40,7 +40,7 @@ export default function UpdateAgents(props) {
     };
 
     getAgent();
-  }, []);
+  }, [agentId, currentUser.token]);
 
   const updateAgent = async (event, setValidated) => {
     const form = event.currentTarget;

@@ -60,7 +60,7 @@ export default function UpdateTechnician(props) {
     };
 
     getDataFromServer();
-  }, []);
+  }, [technicianId, currentUser.token]);
 
   const updateTechnician = async (event, setValidated) => {
     const form = event.currentTarget;

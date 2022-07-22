@@ -4,15 +4,10 @@ import { Link } from "react-router-dom";
 
 import { get_td_item } from "../../utils/table/get_td_item";
 
-export default function TableBody({
-  tableHeader,
-  tableBodyData,
-  currPage,
-  linkAddress,
-}) {
+export default function TableBody({ tableHeader, tableBodyData, linkAddress }) {
   return (
     <div>
-      <table class="table">
+      <table className="table">
         <thead>
           <tr>
             {tableHeader.map((item, index) => (
@@ -23,8 +18,8 @@ export default function TableBody({
         <tbody>
           {tableBodyData.map((item, index) => {
             return (
-              <tr>
-                <th scope="row">{currPage * 10 + index + 1}</th>
+              <tr key={item._id}>
+                <th scope="row">{item.id}</th>
                 {get_td_item(item)}
                 <td>
                   <Link

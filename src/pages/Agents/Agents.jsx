@@ -21,19 +21,17 @@ export default function Agents() {
   );
 
   const filterData = (data) => {
-    const filter = [];
-    data.map((item) => {
-      filter.push(
-        _.pick(item, [
-          "_id",
-          "name",
-          "phone",
-          "region",
-          "city",
-          "area",
-          "location",
-        ])
-      );
+    const filter = data.map((item) => {
+      return _.pick(item, [
+        "_id",
+        "name",
+        "phone",
+        "region",
+        "city",
+        "area",
+        "location",
+        "id",
+      ]);
     });
     return filter;
   };

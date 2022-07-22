@@ -23,10 +23,10 @@ const useTable = (linkName, pageNumber, pageSize, dispatch, state) => {
     };
 
     getData();
-  }, []);
+  }, [linkName, pageNumber, pageSize, dispatch, currentUser.token]);
 
   const hanldeSearch = async (event) => {
-    const search = event.target.value != "" ? event.target.value : null;
+    const search = event.target.value !== "" ? event.target.value : null;
     try {
       const data = await fetchData(
         currentUser.token,

@@ -21,8 +21,7 @@ const Technician = () => {
   );
 
   const filterData = (data) => {
-    const filter = [];
-    data.map((item) => {
+    const filter = data.map((item) => {
       let temp = _.pick(item, [
         "_id",
         "name",
@@ -30,9 +29,10 @@ const Technician = () => {
         "region",
         "city",
         "area",
+        "id",
       ]);
       temp.agent = item.agent.name;
-      filter.push(temp);
+      return temp;
     });
     return filter;
   };

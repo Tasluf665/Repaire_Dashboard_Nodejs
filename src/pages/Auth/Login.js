@@ -7,6 +7,7 @@ import AuthContainer from "./AuthContainer";
 export default function Login() {
   const emailRef = useRef();
   const passwordRef = useRef();
+
   const { login } = useAuth();
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -24,7 +25,10 @@ export default function Login() {
       setError(ex.message);
     }
 
-    setLoading(false);
+    return () => {
+      setError("");
+      setLoading(false);
+    };
   }
 
   return (
@@ -40,7 +44,7 @@ export default function Login() {
                 type="email"
                 ref={emailRef}
                 required
-                autocomplete="on"
+                autoComplete="on"
               />
             </Form.Group>
             <Form.Group id="password">
@@ -49,7 +53,7 @@ export default function Login() {
                 type="password"
                 ref={passwordRef}
                 required
-                autocomplete="on"
+                autoComplete="on"
               />
             </Form.Group>
             <Button

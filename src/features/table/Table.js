@@ -18,7 +18,6 @@ export default function Table({
         <TableBody
           tableHeader={customerTableHead}
           tableBodyData={filterData(data.data)}
-          currPage={currPage}
           linkAddress={linkAddress}
         />
         <TablePagination
