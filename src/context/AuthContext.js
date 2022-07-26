@@ -21,7 +21,7 @@ export function AuthProvider({ children }) {
 
     let result = await response.json();
 
-    if (!result.error) setCurrentUser(result);
+    if (!result.error) return result;
     else throw new Error(result.error);
   }
 
@@ -35,6 +35,23 @@ export function AuthProvider({ children }) {
     });
 
     let result = await response.json();
+    console.log(result);
+
+    if (!result.error) setCurrentUser(result);
+    else throw new Error(result.error);
+  }
+
+  async function loginWithGoogle(name, email, googleId) {
+    let response = await fetch("http://localhost:3001/api/users/google", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ name, email, googleId }),
+      mode: "cors",
+    });
+
+    let result = await response.json();
 
     if (!result.error) setCurrentUser(result);
     else throw new Error(result.error);
@@ -44,6 +61,7 @@ export function AuthProvider({ children }) {
     currentUser,
     signup,
     login,
+    loginWithGoogle,
   };
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

@@ -3,15 +3,28 @@ import { Form, Button, Card, Alert } from "react-bootstrap";
 import { useAuth } from "../../context/AuthContext";
 import { Link, useHistory } from "react-router-dom";
 import AuthContainer from "./AuthContainer";
+import GoogleLogin from "react-google-login";
+import { gapi } from "gapi-script";
 
 export default function Login() {
   const emailRef = useRef();
   const passwordRef = useRef();
 
-  const { login } = useAuth();
+  const { login, loginWithGoogle } = useAuth();
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const history = useHistory();
+
+  React.useEffect(() => {
+    function start() {
+      gapi.client.init({
+        clientId: process.env.REACT_APP_GOOGLE_CLIENT_ID,
+        scope: "email",
+      });
+    }
+
+    gapi.load("client:auth2", start);
+  }, []);
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -30,6 +43,30 @@ export default function Login() {
       setLoading(false);
     };
   }
+
+  const handleFailer = (result) => {
+    alert(JSON.stringify(result));
+  };
+
+  const handleLogin = async (googleData) => {
+    const name = googleData.profileObj.name;
+    const email = googleData.profileObj.email;
+    const googleId = googleData.profileObj.googleId;
+
+    try {
+      setError("");
+      setLoading(true);
+      await loginWithGoogle(name, email, googleId);
+      history.push("/");
+    } catch (ex) {
+      setError(ex.message);
+    }
+
+    return () => {
+      setError("");
+      setLoading(false);
+    };
+  };
 
   return (
     <AuthContainer>
@@ -72,6 +109,14 @@ export default function Login() {
       </Card>
       <div className="w-100 text-center mt-2">
         Need an account? <Link to="/signup">Sign Up</Link>
+      </div>
+      <div className="w-100 text-center mt-2">
+        <GoogleLogin
+          clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}
+          buttonText="Log in with Google"
+          onSuccess={handleLogin}
+          onFailure={handleFailer}
+        ></GoogleLogin>
       </div>
     </AuthContainer>
   );

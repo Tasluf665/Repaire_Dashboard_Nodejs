@@ -3,6 +3,7 @@ import { Form, Button, Card, Alert } from "react-bootstrap";
 import { useAuth } from "../../context/AuthContext";
 import { Link, useHistory } from "react-router-dom";
 import AuthContainer from "./AuthContainer";
+import Swal from "sweetalert2";
 
 export default function Signup() {
   const nameRef = useRef();
@@ -24,12 +25,21 @@ export default function Signup() {
     try {
       setError("");
       setLoading(true);
-      await signup(
+      const result = await signup(
         nameRef.current.value,
         emailRef.current.value,
         passwordRef.current.value
       );
-      history.push("/");
+
+      Swal.fire({
+        position: "center",
+        icon: "success",
+        title: result.message,
+        showConfirmButton: false,
+        timer: 3000,
+      });
+
+      history.push("/login");
     } catch (ex) {
       setError(ex.message);
     }
