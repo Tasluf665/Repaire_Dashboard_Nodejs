@@ -44,19 +44,21 @@ export default function Login() {
     };
   }
 
-  const handleFailer = (result) => {
+  const handleGoogleFailer = (result) => {
     alert(JSON.stringify(result));
   };
 
-  const handleLogin = async (googleData) => {
+  const handleGoogleLogin = async (googleData) => {
     const name = googleData.profileObj.name;
     const email = googleData.profileObj.email;
     const googleId = googleData.profileObj.googleId;
+    const accessToken = googleData.accessToken;
+    console.log(googleData);
 
     try {
       setError("");
       setLoading(true);
-      await loginWithGoogle(name, email, googleId);
+      await loginWithGoogle(name, email, googleId, accessToken);
       history.push("/");
     } catch (ex) {
       setError(ex.message);
@@ -114,8 +116,8 @@ export default function Login() {
         <GoogleLogin
           clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}
           buttonText="Log in with Google"
-          onSuccess={handleLogin}
-          onFailure={handleFailer}
+          onSuccess={handleGoogleLogin}
+          onFailure={handleGoogleFailer}
         ></GoogleLogin>
       </div>
     </AuthContainer>

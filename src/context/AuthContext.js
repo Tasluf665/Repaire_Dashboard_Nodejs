@@ -35,19 +35,18 @@ export function AuthProvider({ children }) {
     });
 
     let result = await response.json();
-    console.log(result);
 
     if (!result.error) setCurrentUser(result);
     else throw new Error(result.error);
   }
 
-  async function loginWithGoogle(name, email, googleId) {
+  async function loginWithGoogle(name, email, googleId, accessToken) {
     let response = await fetch("http://localhost:3001/api/users/google", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ name, email, googleId }),
+      body: JSON.stringify({ name, email, googleId, accessToken }),
       mode: "cors",
     });
 
@@ -57,11 +56,31 @@ export function AuthProvider({ children }) {
     else throw new Error(result.error);
   }
 
+  async function resetPassword(email) {
+    let response = await fetch(
+      "http://localhost:3001/api/auth/forgot-password",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email }),
+        mode: "cors",
+      }
+    );
+
+    let result = await response.json();
+
+    if (!result.error) return result.success;
+    else throw new Error(result.error);
+  }
+
   const value = {
     currentUser,
     signup,
     login,
     loginWithGoogle,
+    resetPassword,
   };
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
