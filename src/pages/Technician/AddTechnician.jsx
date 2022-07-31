@@ -21,7 +21,7 @@ export default function AddTechnician() {
   React.useEffect(() => {
     const getAllAgent = async () => {
       try {
-        const res = await fetch(`http://localhost:3001/api/agents`, {
+        const res = await fetch(`${process.env.BACKEND_BASE_URL}/api/agents`, {
           headers: {
             "x-auth-token": currentUser.token,
           },

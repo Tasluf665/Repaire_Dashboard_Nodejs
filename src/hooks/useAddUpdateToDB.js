@@ -32,7 +32,7 @@ export default function useAddUpdateToDB(dispatch) {
   const updateToServer = async (linkName, data, id) => {
     try {
       let response = await fetch(
-        `http://localhost:3001/api/${linkName}/${id}`,
+        `${process.env.BACKEND_BASE_URL}/api/${linkName}/${id}`,
         {
           method: "PUT",
           headers: {
@@ -56,14 +56,17 @@ export default function useAddUpdateToDB(dispatch) {
   const addToServer = async (linkName, data) => {
     try {
       console.log(JSON.stringify(data));
-      let response = await fetch(`http://localhost:3001/api/${linkName}`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "x-auth-token": currentUser.token,
-        },
-        body: JSON.stringify(data),
-      });
+      let response = await fetch(
+        `${process.env.BACKEND_BASE_URL}/api/${linkName}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "x-auth-token": currentUser.token,
+          },
+          body: JSON.stringify(data),
+        }
+      );
 
       let result = await response.json();
 

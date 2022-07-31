@@ -22,11 +22,14 @@ export default function UpdateAgents(props) {
   React.useEffect(() => {
     const getAgent = async () => {
       try {
-        const res = await fetch(`http://localhost:3001/api/agents/${agentId}`, {
-          headers: {
-            "x-auth-token": currentUser.token,
-          },
-        });
+        const res = await fetch(
+          `${process.env.BACKEND_BASE_URL}/api/agents/${agentId}`,
+          {
+            headers: {
+              "x-auth-token": currentUser.token,
+            },
+          }
+        );
         const data = await res.json();
 
         if (data.error) {

@@ -12,8 +12,8 @@ export default function useAddress(dispatch) {
       try {
         const res = await fetch(
           id
-            ? `http://localhost:3001/api/address?id=${id}`
-            : `http://localhost:3001/api/address`,
+            ? `${process.env.BACKEND_BASE_URL}/api/address?id=${id}`
+            : `${process.env.BACKEND_BASE_URL}/api/address`,
           {
             headers: {
               "x-auth-token": currentUser.token,

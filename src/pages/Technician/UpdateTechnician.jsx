@@ -26,7 +26,7 @@ export default function UpdateTechnician(props) {
     const getDataFromServer = async () => {
       try {
         let res = await fetch(
-          `http://localhost:3001/api/technicians/${technicianId}`,
+          `${process.env.BACKEND_BASE_URL}/api/technicians/${technicianId}`,
           {
             headers: {
               "x-auth-token": currentUser.token,
@@ -35,7 +35,7 @@ export default function UpdateTechnician(props) {
         );
         const technician = await res.json();
 
-        res = await fetch(`http://localhost:3001/api/agents`, {
+        res = await fetch(`${process.env.BACKEND_BASE_URL}/api/agents`, {
           headers: {
             "x-auth-token": currentUser.token,
           },

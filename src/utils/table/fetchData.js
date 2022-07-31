@@ -7,8 +7,8 @@ export const fetchData = async (
 ) => {
   const res = await fetch(
     name
-      ? `http://localhost:3001/api/${linkName}?pageNumber=${pageNumber}&pageSize=${pageSize}&name=${name}`
-      : `http://localhost:3001/api/${linkName}?pageNumber=${pageNumber}&pageSize=${pageSize}`,
+      ? `${process.env.BACKEND_BASE_URL}/api/${linkName}?pageNumber=${pageNumber}&pageSize=${pageSize}&name=${name}`
+      : `${process.env.BACKEND_BASE_URL}/api/${linkName}?pageNumber=${pageNumber}&pageSize=${pageSize}`,
     {
       headers: {
         "x-auth-token": jwtToken,

@@ -10,7 +10,7 @@ export function AuthProvider({ children }) {
   const [currentUser, setCurrentUser] = useState();
 
   async function signup(name, email, password) {
-    let response = await fetch("http://localhost:3001/api/users", {
+    let response = await fetch(`${process.env.BACKEND_BASE_URL}/api/users`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -26,7 +26,7 @@ export function AuthProvider({ children }) {
   }
 
   async function login(email, password) {
-    let response = await fetch("http://localhost:3001/api/auth", {
+    let response = await fetch(`${process.env.BACKEND_BASE_URL}/api/auth`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -41,14 +41,17 @@ export function AuthProvider({ children }) {
   }
 
   async function loginWithGoogle(name, email, googleId, accessToken) {
-    let response = await fetch("http://localhost:3001/api/users/google", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ name, email, googleId, accessToken }),
-      mode: "cors",
-    });
+    let response = await fetch(
+      `${process.env.BACKEND_BASE_URL}/api/users/google`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ name, email, googleId, accessToken }),
+        mode: "cors",
+      }
+    );
 
     let result = await response.json();
 
@@ -58,7 +61,7 @@ export function AuthProvider({ children }) {
 
   async function resetPassword(email) {
     let response = await fetch(
-      "http://localhost:3001/api/auth/forgot-password",
+      `${process.env.BACKEND_BASE_URL}/api/auth/forgot-password`,
       {
         method: "POST",
         headers: {
