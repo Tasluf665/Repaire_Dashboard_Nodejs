@@ -2,9 +2,12 @@ import React from "react";
 import "./table.css";
 import { Link } from "react-router-dom";
 
-import { get_td_item } from "../../utils/table/get_td_item";
-
-export default function TableBody({ tableHeader, tableBodyData, linkAddress }) {
+export default function TableBody({
+  tableHeader,
+  tableBodyData,
+  linkAddress,
+  get_td_item,
+}) {
   return (
     <div>
       <table className="table">

@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 
 import UpdateFormPage from "../../features/Form/UpdateFormPage";
-import { useAuth } from "../../context/AuthContext";
 import WrapperComponent from "../../components/custome/WrapperComponent";
 import useAddUpdateToDB from "../../hooks/useAddUpdateToDB";
+import { useAuth } from "../../context/AuthContext";
 import {
   reducer,
   initialState,
@@ -11,6 +11,7 @@ import {
   LOADING,
   FETCH_ALL_AGENTS_AND_TECHNICIANS_FROM_SERVER,
 } from "../../reducers/TechnicianReducer";
+
 import Select from "../../features/Form/Select";
 import Input from "../../features/Form/Input";
 
@@ -26,7 +27,7 @@ export default function UpdateTechnician(props) {
     const getDataFromServer = async () => {
       try {
         let res = await fetch(
-          `${process.env.BACKEND_BASE_URL}/api/technicians/${technicianId}`,
+          `${process.env.REACT_APP_BACKEND_BASE_URL}/api/technicians/${technicianId}`,
           {
             headers: {
               "x-auth-token": currentUser.token,
@@ -35,18 +36,21 @@ export default function UpdateTechnician(props) {
         );
         const technician = await res.json();
 
-        res = await fetch(`${process.env.BACKEND_BASE_URL}/api/agents`, {
-          headers: {
-            "x-auth-token": currentUser.token,
-          },
-        });
+        res = await fetch(
+          `${process.env.REACT_APP_BACKEND_BASE_URL}/api/agents`,
+          {
+            headers: {
+              "x-auth-token": currentUser.token,
+            },
+          }
+        );
         const data = await res.json();
         const allAgents = data.data;
 
         if (!technician.error && !allAgents.error) {
           dispatch({
             type: FETCH_ALL_AGENTS_AND_TECHNICIANS_FROM_SERVER,
-            value: { technician, allAgents },
+            value: { technician: technician.technician, allAgents },
           });
         } else {
           dispatch({
@@ -112,7 +116,7 @@ export default function UpdateTechnician(props) {
   return (
     <WrapperComponent error={state.error} loading={state.loading}>
       <UpdateFormPage
-        title="Agent"
+        title="Technician"
         data={state.technician}
         handleSubmit={updateTechnician}
         edit={edit}
@@ -128,19 +132,21 @@ export default function UpdateTechnician(props) {
             options={getOptions(state.allAgents)}
           />
         ) : (
-          <Input
-            title="Agent"
-            defaultValue={
-              state.technician
-                ? state.technician.agent.name +
-                  ", " +
-                  state.technician.agent.city
-                : null
-            }
-            name="agent"
-            type="text"
-            cutomeClass="col-12 mb-3"
-          />
+          <>
+            <Input
+              title="Agent"
+              defaultValue={
+                state.technician
+                  ? state.technician.agent.name +
+                    ", " +
+                    state.technician.agent.city
+                  : null
+              }
+              name="agent"
+              type="text"
+              cutomeClass="col-12 mb-3"
+            />
+          </>
         )}
       </UpdateFormPage>
     </WrapperComponent>

@@ -11,6 +11,7 @@ export default function Table({
   filterData,
   handlePaginationClick,
   linkAddress,
+  get_td_item,
 }) {
   return (
     <>
@@ -19,6 +20,7 @@ export default function Table({
           tableHeader={customerTableHead}
           tableBodyData={filterData(data.data)}
           linkAddress={linkAddress}
+          get_td_item={get_td_item}
         />
         <TablePagination
           count={data.count}

@@ -23,7 +23,7 @@ export default function UpdateAgents(props) {
     const getAgent = async () => {
       try {
         const res = await fetch(
-          `${process.env.BACKEND_BASE_URL}/api/agents/${agentId}`,
+          `${process.env.REACT_APP_BACKEND_BASE_URL}/api/agents/${agentId}`,
           {
             headers: {
               "x-auth-token": currentUser.token,

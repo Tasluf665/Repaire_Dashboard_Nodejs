@@ -53,7 +53,6 @@ export default function Login() {
     const email = googleData.profileObj.email;
     const googleId = googleData.profileObj.googleId;
     const accessToken = googleData.accessToken;
-    console.log(googleData);
 
     try {
       setError("");

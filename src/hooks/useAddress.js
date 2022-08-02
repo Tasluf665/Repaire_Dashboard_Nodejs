@@ -12,8 +12,8 @@ export default function useAddress(dispatch) {
       try {
         const res = await fetch(
           id
-            ? `${process.env.BACKEND_BASE_URL}/api/address?id=${id}`
-            : `${process.env.BACKEND_BASE_URL}/api/address`,
+            ? `${process.env.REACT_APP_BACKEND_BASE_URL}/api/address?id=${id}`
+            : `${process.env.REACT_APP_BACKEND_BASE_URL}/api/address`,
           {
             headers: {
               "x-auth-token": currentUser.token,

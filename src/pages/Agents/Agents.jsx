@@ -6,6 +6,7 @@ import Table from "../../features/table/Table";
 import TableTitle from "../../features/table/TableTitle";
 import TableSearchbar from "../../features/table/TableSearchbar";
 import { AgentTableHead } from "../../data/Agent";
+import { get_td_item } from "../../utils/table/get_td_item";
 
 import { reducer, initialState } from "../../reducers/TableReducers";
 import useTable from "../../hooks/useTable";
@@ -47,6 +48,7 @@ export default function Agents() {
         filterData={filterData}
         handlePaginationClick={handlePaginationClick}
         linkAddress="/updateagents"
+        get_td_item={get_td_item}
       />
     </WrapperComponent>
   );

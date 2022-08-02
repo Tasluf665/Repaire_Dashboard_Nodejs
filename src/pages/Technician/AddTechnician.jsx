@@ -21,11 +21,14 @@ export default function AddTechnician() {
   React.useEffect(() => {
     const getAllAgent = async () => {
       try {
-        const res = await fetch(`${process.env.BACKEND_BASE_URL}/api/agents`, {
-          headers: {
-            "x-auth-token": currentUser.token,
-          },
-        });
+        const res = await fetch(
+          `${process.env.REACT_APP_BACKEND_BASE_URL}/api/agents`,
+          {
+            headers: {
+              "x-auth-token": currentUser.token,
+            },
+          }
+        );
         const data = await res.json();
         if (data.error) {
           dispatch({ type: ERROR, value: data.error });

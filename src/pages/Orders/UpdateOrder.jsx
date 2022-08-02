@@ -1,312 +1,406 @@
-import React, { useState } from "react";
+import React from "react";
 import { Form, Button } from "react-bootstrap";
+import Swal from "sweetalert2";
 
-import CustomeInput from "../../components/custome/CustomeInput";
-import CenterButton from "../../components/custome/CenterButton";
-import CustomeFormGroup from "../../components/custome/CustomeFormGroup";
-import CustomeSpinner from "../../components/custome/CustomeSpinner";
-import CustomeAgentDropdown from "../../components/custome/CustomeAgentDropdown";
-import { handleSubmit } from "../../server/Order";
-import { getAgents } from "../../server/Agent";
-import { getTechnicians } from "../../server/Technician";
+import useAddUpdateToDB from "../../hooks/useAddUpdateToDB";
+import WrapperComponent from "../../components/custome/WrapperComponent";
 import { useAuth } from "../../context/AuthContext";
+import {
+  reducer,
+  initialState,
+  ERROR,
+  LOADING,
+  FETCH_DATA_FROM_SERVER,
+} from "../../reducers/OrderReducer.js";
+
+import FormTitle from "../../features/Form/FormTitle";
+import Input from "../../features/Form/Input";
+import Select from "../../features/Form/Select";
+import SubmitButton from "../../features/Form/SubmitButton";
 
 export default function UpdateOrder(props) {
-  const [edit, setEdit] = useState(false);
-  const [validated, setValidated] = useState(false);
-  const [statusValue, setStatusValue] = useState(true);
-  const [allAgents, setAllAgents] = React.useState();
-  const [allTechnicians, setAllTechnicians] = React.useState([]);
-  const [accessToken, setAccessToken] = React.useState();
-  const [loading, setLoading] = React.useState(true);
-  const [error, setError] = React.useState();
+  const [state, dispatch] = React.useReducer(reducer, initialState);
+  const [edit, setEdit] = React.useState(false);
+  const [validated, setValidated] = React.useState(false);
+  const [selectedStatus, setSelectedStatus] = React.useState("Select");
 
-  const { currentUser, logout } = useAuth();
+  const orderId = props.location.state;
+  const { currentUser } = useAuth();
+  const { updateToServer } = useAddUpdateToDB(dispatch);
+
+  const showResultAnimation = (result) => {
+    if (result.error) {
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: result.error,
+      });
+    } else {
+      Swal.fire({
+        position: "center",
+        icon: "success",
+        title: `Order has been updated`,
+        showConfirmButton: false,
+        timer: 1500,
+      });
+    }
+  };
+
+  const handleSubmit = async (event, setValidated) => {
+    const form = event.currentTarget;
+    event.preventDefault();
+
+    if (event.target.status.value === "Accepted") {
+      let data = {
+        problem: event.target.problem.value,
+        note: event.target.note.value,
+        statusDetails: "Your order has been accepted",
+        statusState: "Accepted",
+      };
+      const res = await fetch(
+        `${process.env.REACT_APP_BACKEND_BASE_URL}/api/orders/accept/${orderId}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            "x-auth-token": currentUser.token,
+          },
+          body: JSON.stringify(data),
+        }
+      );
+
+      const result = await res.json();
+      showResultAnimation(result);
+    } else if (event.target.status.value === "Technician Assigned") {
+      let index = event.target.technician.selectedIndex;
+      let optionElement = event.target.technician.childNodes[index];
+      let technicianId = optionElement.getAttribute("id");
+
+      let data = {
+        technicianId,
+        statusDetails: "Technician has been assigned to your order",
+        statusState: "Technician Assigned",
+      };
+
+      const res = await fetch(
+        `${process.env.REACT_APP_BACKEND_BASE_URL}/api/orders/assigned/${orderId}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            "x-auth-token": currentUser.token,
+          },
+          body: JSON.stringify(data),
+        }
+      );
+
+      const result = await res.json();
+      showResultAnimation(result);
+    } else if (event.target.status.value === "Product Repaired") {
+      let data = {
+        amount: event.target.amount.value,
+        statusDetails: "Your Product has been repaired. Please pay your bill",
+        statusState: "Product Repaired",
+      };
+
+      const res = await fetch(
+        `${process.env.REACT_APP_BACKEND_BASE_URL}/api/orders/repaired/${orderId}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            "x-auth-token": currentUser.token,
+          },
+          body: JSON.stringify(data),
+        }
+      );
+
+      const result = await res.json();
+      showResultAnimation(result);
+    }
+  };
+
+  const DisableInputItem = () => {
+    return (
+      <>
+        <Input
+          title="Name"
+          defaultValue={state.order ? state.order.name : null}
+          type="text"
+          disabled={edit}
+        />
+        <Input
+          title="Phone"
+          defaultValue={state.order ? state.order.phone : null}
+          type="text"
+          disabled={edit}
+        />
+        <Input
+          title="Address"
+          defaultValue={state.order ? state.order.address : null}
+          type="text"
+          cutomeClass="col-12 mb-3"
+          disabled={edit}
+        />
+        <Input
+          title="Booking Time"
+          defaultValue={
+            state.order
+              ? new Date(state.order.bookingTime).toLocaleDateString()
+              : null
+          }
+          type="text"
+          disabled={edit}
+        />
+        <Input
+          title="Arrival Time"
+          defaultValue={
+            state.order
+              ? new Date(state.order.arrivalDate).toLocaleDateString() +
+                ", " +
+                new Date(state.order.arrivalTime).toLocaleTimeString()
+              : null
+          }
+          type="text"
+          disabled={edit}
+        />
+        <Input
+          title="Category"
+          defaultValue={state.order ? state.order.category : null}
+          type="text"
+          disabled={edit}
+        />
+        <Input
+          title="Category Type"
+          defaultValue={state.order ? state.order.categoryType : null}
+          type="text"
+          disabled={edit}
+        />
+        <Input
+          title="Product"
+          defaultValue={state.order ? state.order.product : null}
+          type="text"
+          disabled={edit}
+        />
+        <Input
+          title="Type"
+          defaultValue={state.order ? state.order.type : null}
+          type="text"
+          disabled={edit}
+        />
+      </>
+    );
+  };
 
   React.useEffect(() => {
-    const getData = async () => {
-      let token = await currentUser.accessToken;
-      setAccessToken(token);
-      const allAgents = await getAgents(token);
-      const allTechnicians = await getTechnicians(token);
+    const getDataFromServer = async () => {
+      try {
+        let ordersResponse = await fetch(
+          `${process.env.REACT_APP_BACKEND_BASE_URL}/api/orders/${orderId}`,
+          {
+            headers: {
+              "x-auth-token": currentUser.token,
+            },
+          }
+        );
+        const result = await ordersResponse.json();
 
-      if (allTechnicians.error || allAgents.error) {
-        if (allAgents.error === "Auth token is expired") {
-          logout();
+        let allTechniciansResponse = await fetch(
+          `${process.env.REACT_APP_BACKEND_BASE_URL}/api/technicians/allTechnicians`,
+          {
+            headers: {
+              "x-auth-token": currentUser.token,
+            },
+          }
+        );
+        const allTechniciansResult = await allTechniciansResponse.json();
+
+        let allAgentsResponse = await fetch(
+          `${process.env.REACT_APP_BACKEND_BASE_URL}/api/agents/allAgents`,
+          {
+            headers: {
+              "x-auth-token": currentUser.token,
+            },
+          }
+        );
+        const allAgentsResult = await allAgentsResponse.json();
+
+        if (!result.error) {
+          dispatch({
+            type: FETCH_DATA_FROM_SERVER,
+            value: {
+              order: result.order,
+              technicians: allTechniciansResult.data,
+              agents: allAgentsResult.data,
+            },
+          });
+        } else {
+          dispatch({ type: ERROR, value: result.error });
         }
-        setError(allAgents.error);
-      } else {
-        setAllAgents(allAgents);
-        setAllTechnicians(allTechnicians);
-        setLoading(false);
+      } catch (ex) {
+        dispatch({ type: ERROR, value: ex.message });
       }
     };
-    getData();
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+    getDataFromServer();
+  }, []);
 
-  const getOptions = (array) => {
+  const getOptions = () => {
+    let array = [
+      { id: 0, value: "Select" },
+      { id: 1, value: "Pending" },
+      { id: 2, value: "Accepted" },
+      { id: 3, value: "Technician Assigned" },
+      { id: 4, value: "Product Repaired" },
+      { id: 5, value: "Payment Complete" },
+    ];
     return array.map((item) => (
-      <option id={item.details} key={item.title}>
-        {item.title}
+      <option id={item.id} key={item.id}>
+        {item.value}
       </option>
     ));
   };
 
-  const options = [
-    {
-      title: "Select",
-      details: "",
-    },
-    {
-      title: "Pending",
-      details: "Your Request is pending now",
-    },
-    {
-      title: "Accepted",
-      details: "Your request has been accepted",
-    },
-
-    {
-      title: "Technician Assigned",
-      details: "Technician Assigned has been assigned for you",
-    },
-    {
-      title: "Product Repaired",
-      details: "Your product has been repaired",
-    },
-    {
-      title: "Payment Complete",
-      details: "We have receive your payment",
-    },
-  ];
-
-  const getSelectedAgent = (agentId) => {
-    const targetagent = allAgents.find((item) => item.key === agentId);
-    return (
-      targetagent.name +
-      ", " +
-      targetagent.phone +
-      ", " +
-      targetagent.region +
-      ", " +
-      targetagent.city
-    );
+  const getSelectOptions = (array) => {
+    return array.map((item) => (
+      <option id={item._id} key={item._id}>
+        {item.name + ", " + item.area}
+      </option>
+    ));
   };
 
-  const getSelectedTechnician = (technicianId) => {
-    const targetTechnician = allTechnicians.find(
-      (item) => item.key === technicianId
+  const getTargetAgent = (technicianId) => {
+    const technician = state.technicians.find(
+      (item) => item._id === technicianId
     );
-    return (
-      targetTechnician.name +
-      ", " +
-      targetTechnician.phone +
-      ", " +
-      targetTechnician.region +
-      ", " +
-      targetTechnician.city
-    );
+    const agent = technician.agent;
+    const text = `${agent.name}, ${agent.phone}, ${agent.city}, ${agent.region}`;
+    return text;
   };
 
-  const paymentInfo = () => {
-    let total = 0;
-    for (let item in state.Payment) {
-      total =
-        total +
-        Number(
-          state.Payment[item].paymentInfo.Total_Amount.replace("৳", "").trim()
-        );
-    }
-    return total;
+  const getTargetTechnician = (technicianId) => {
+    const technician = state.technicians.find(
+      (item) => item._id === technicianId
+    );
+    const text = `${technician.name}, ${technician.phone}, ${technician.city}, ${technician.region}`;
+    return text;
   };
-
-  const state = props.location.state;
 
   return (
-    <div>
-      {loading ? (
-        <CustomeSpinner />
-      ) : (
-        <>
-          {error ? (
-            <div
-              className="col-12 d-flex justify-content-center"
-              style={{ marginTop: "30px" }}
+    <WrapperComponent error={state.error} loading={state.loading}>
+      <div className="col-12 d-flex justify-content-center">
+        <div className="col-10">
+          <FormTitle title={`Update Order`}>
+            <Button
+              variant=""
+              style={styles.button}
+              type="submit"
+              onClick={() => setEdit(true)}
             >
-              <h1>{error}</h1>
-            </div>
-          ) : (
-            <div className="col-12 d-flex justify-content-center">
-              <div className="col-10">
-                <div className="d-flex justify-content-between">
-                  <h2 className="col-12 mb-4">Update Order</h2>
-                  <div className="h-50">
-                    <Button
-                      variant=""
-                      style={styles.button}
-                      type="submit"
-                      onClick={() => setEdit(true)}
-                    >
-                      Edit
-                    </Button>
-                  </div>
-                </div>
-                <Form
-                  className="col-12 row"
-                  noValidate
-                  validated={validated}
-                  onSubmit={(event) =>
-                    handleSubmit(
-                      event,
-                      setValidated,
-                      state.customerId,
-                      state.orderId,
-                      accessToken
-                    )
-                  }
-                >
-                  <CustomeInput
-                    title="Name"
-                    defaultValue={state.name}
-                    type="text"
-                    disabled={edit}
-                  />
-                  <CustomeInput
-                    title="Phone"
-                    defaultValue={state.phone}
-                    type="text"
-                    disabled={edit}
-                  />
-                  <CustomeInput
-                    title="Address"
-                    defaultValue={state.address}
-                    type="text"
-                    cutomeClass="col-12 mb-3"
-                    disabled={edit}
-                  />
-                  <CustomeInput
-                    title="Booking Time"
-                    defaultValue={`${new Date(state.bookingTime).getDate()}-${
-                      new Date(state.bookingTime).getMonth() + 1
-                    }-${new Date(state.bookingTime).getFullYear()}`}
-                    type="text"
-                    disabled={edit}
-                  />
-                  <CustomeInput
-                    title="Arrival Time"
-                    defaultValue={`${state.date},  ${state.time}`}
-                    type="text"
-                    disabled={edit}
-                  />
-                  <CustomeInput
-                    title="Category"
-                    defaultValue={state.category}
-                    type="text"
-                    disabled={edit}
-                  />
-                  <CustomeInput
-                    title="Category Type"
-                    defaultValue={state.categoryType}
-                    type="text"
-                    disabled={edit}
-                  />
-                  <CustomeInput
-                    title="Product"
-                    defaultValue={state.product}
-                    type="text"
-                    disabled={edit}
-                  />
-                  <CustomeInput
-                    title="Type"
-                    defaultValue={state.type}
-                    type="text"
-                    disabled={edit}
-                  />
-                  <CustomeInput
-                    title="Problem"
-                    defaultValue={state.problem}
-                    type="text"
-                    cutomeClass="col-12 mb-3"
-                  />
-                  <CustomeInput
-                    title="Note"
-                    defaultValue={state.note}
-                    type="text"
-                  />
-                  {edit ? (
-                    <CustomeFormGroup title="Status">
-                      <Form.Select
-                        aria-label="Default select example"
-                        name="status"
-                        value={statusValue}
-                        onChange={(event) => setStatusValue(event.target.value)}
-                      >
-                        {getOptions(options)}
-                      </Form.Select>
-                    </CustomeFormGroup>
-                  ) : (
-                    <CustomeInput
-                      title="Status"
-                      defaultValue={state.status[state.status.length - 1].state}
-                      type="text"
-                    />
-                  )}
+              Edit
+            </Button>
+          </FormTitle>
+          <Form
+            className="col-12 row"
+            noValidate
+            validated={validated}
+            onSubmit={(event) => handleSubmit(event, setValidated)}
+          >
+            {DisableInputItem()}
+            <Input
+              title="Problem"
+              defaultValue={state.order ? state.order.problem : null}
+              type="text"
+              name="problem"
+              cutomeClass="col-12 mb-3"
+            />
+            <Input
+              title="Note"
+              defaultValue={state.order ? state.order.note : null}
+              type="text"
+              name="note"
+            />
+            {edit ? (
+              <Select
+                title="Status"
+                name="status"
+                options={getOptions()}
+                onChange={(value) => setSelectedStatus(value.target.value)}
+              />
+            ) : (
+              <Input
+                title="Status"
+                defaultValue={
+                  state.order
+                    ? state.order.status[state.order.status.length - 1]
+                        .statusState
+                    : null
+                }
+                type="text"
+              />
+            )}
 
-                  {statusValue === "Technician Assigned" ? (
-                    <>
-                      <CustomeAgentDropdown allAgents={allAgents} />
-                      <CustomeAgentDropdown
-                        allAgents={allTechnicians}
-                        title="Technician"
-                      />
-                    </>
-                  ) : null}
+            {edit ? (
+              selectedStatus === "Technician Assigned" ? (
+                <>
+                  <Select
+                    customeClass="col-12 mb-3"
+                    title="Agent"
+                    name="agnet"
+                    options={getSelectOptions(state.agents)}
+                  />
+                  <Select
+                    customeClass="col-12 mb-3"
+                    title="Technician"
+                    name="technician"
+                    options={getSelectOptions(state.technicians)}
+                  />
+                </>
+              ) : null
+            ) : null}
 
-                  {state.agent && statusValue !== "Technician Assigned" ? (
-                    <CustomeInput
-                      title="Agent Details"
-                      cutomeClass="col-12 mb-3"
-                      defaultValue={getSelectedAgent(state.agent)}
-                      type="text"
-                      disabled={edit}
-                    />
-                  ) : null}
+            {state.order &&
+            state.order.technicianId &&
+            selectedStatus !== "Technician Assigned" ? (
+              <>
+                <Input
+                  title="Agent"
+                  defaultValue={getTargetAgent(state.order.technicianId)}
+                  type="text"
+                  cutomeClass="col-12 mb-3"
+                  disabled={edit}
+                />
+                <Input
+                  title="Technician"
+                  defaultValue={getTargetTechnician(state.order.technicianId)}
+                  type="text"
+                  cutomeClass="col-12 mb-3"
+                  disabled={edit}
+                />
+              </>
+            ) : null}
 
-                  {state.technician && statusValue !== "Technician Assigned" ? (
-                    <CustomeInput
-                      title="Technician Details"
-                      cutomeClass="col-12 mb-3"
-                      defaultValue={getSelectedTechnician(state.technician)}
-                      type="text"
-                      disabled={edit}
-                    />
-                  ) : null}
+            {edit ? (
+              selectedStatus === "Product Repaired" ? (
+                <Input title="Amount" type="text" name="amount" />
+              ) : null
+            ) : null}
 
-                  {state.amount || statusValue === "Product Repaired" ? (
-                    <CustomeInput
-                      title="Amount"
-                      defaultValue={state.amount}
-                      type="text"
-                    />
-                  ) : null}
+            {state.order &&
+            state.order.amount &&
+            selectedStatus !== "Product Repaired" ? (
+              <Input
+                title="Amount"
+                defaultValue={state.order.amount}
+                type="text"
+                disabled={!edit}
+              />
+            ) : null}
 
-                  {state.Payment ? (
-                    <CustomeInput
-                      title="Customer Payment"
-                      defaultValue={paymentInfo()}
-                      type="text"
-                      disabled={true}
-                    />
-                  ) : null}
-
-                  {edit ? <CenterButton title="Update" /> : null}
-                </Form>
-              </div>
-            </div>
-          )}
-        </>
-      )}
-    </div>
+            {edit ? <SubmitButton title="Update" /> : null}
+          </Form>
+        </div>
+      </div>
+    </WrapperComponent>
   );
 }
 

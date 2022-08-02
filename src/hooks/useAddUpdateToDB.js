@@ -32,7 +32,7 @@ export default function useAddUpdateToDB(dispatch) {
   const updateToServer = async (linkName, data, id) => {
     try {
       let response = await fetch(
-        `${process.env.BACKEND_BASE_URL}/api/${linkName}/${id}`,
+        `${process.env.REACT_APP_BACKEND_BASE_URL}/api/${linkName}/${id}`,
         {
           method: "PUT",
           headers: {
@@ -57,7 +57,7 @@ export default function useAddUpdateToDB(dispatch) {
     try {
       console.log(JSON.stringify(data));
       let response = await fetch(
-        `${process.env.BACKEND_BASE_URL}/api/${linkName}`,
+        `${process.env.REACT_APP_BACKEND_BASE_URL}/api/${linkName}`,
         {
           method: "POST",
           headers: {
