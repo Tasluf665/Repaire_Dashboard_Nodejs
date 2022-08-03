@@ -1,5 +1,4 @@
 import _ from "lodash";
-import Swal from "sweetalert2";
 
 import { useAuth } from "../context/AuthContext";
 import {
@@ -7,27 +6,10 @@ import {
   ERROR,
   DATA_UPDATED_TO_SERVER,
 } from "../reducers/AgentReducer";
+import { showResultAnimation } from "../utils/showResultAnimation";
 
 export default function useAddUpdateToDB(dispatch) {
   const { currentUser } = useAuth();
-
-  const showResultAnimation = (result, linkName) => {
-    if (result.error) {
-      Swal.fire({
-        icon: "error",
-        title: "Oops...",
-        text: result.error,
-      });
-    } else {
-      Swal.fire({
-        position: "center",
-        icon: "success",
-        title: `${_.startCase(linkName)} is successfully updated`,
-        showConfirmButton: false,
-        timer: 1500,
-      });
-    }
-  };
 
   const updateToServer = async (linkName, data, id) => {
     try {
@@ -46,7 +28,10 @@ export default function useAddUpdateToDB(dispatch) {
       let result = await response.json();
       if (!result.error) {
         dispatch({ type: DATA_UPDATED_TO_SERVER, value: result });
-        showResultAnimation(result, linkName);
+        showResultAnimation(
+          result,
+          `${_.startCase(linkName)} is successfully updated`
+        );
       } else dispatch({ type: ERROR, value: result.error });
     } catch (ex) {
       dispatch({ type: ERROR, value: ex.message });
@@ -72,7 +57,10 @@ export default function useAddUpdateToDB(dispatch) {
 
       if (!result.error) {
         dispatch({ type: DATA_ADDED_TO_SERVER });
-        showResultAnimation(result, linkName);
+        showResultAnimation(
+          result,
+          `${_.startCase(linkName)} is successfully updated`
+        );
       } else dispatch({ type: ERROR, value: result.error });
     } catch (ex) {
       console.log("In Ex");
