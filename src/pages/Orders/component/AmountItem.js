@@ -7,7 +7,12 @@ export default function AmountItem({ edit, selectedStatus, order }) {
     <>
       {edit ? (
         selectedStatus === "Product Repaired" ? (
-          <Input title="Amount" type="text" name="amount" />
+          <Input
+            title="Amount"
+            type="text"
+            name="amount"
+            cutomeClass="col-12 mb-3"
+          />
         ) : null
       ) : null}
 
@@ -17,6 +22,7 @@ export default function AmountItem({ edit, selectedStatus, order }) {
           defaultValue={order.amount}
           type="text"
           disabled={!edit}
+          cutomeClass="col-12 mb-3"
         />
       ) : null}
     </>

@@ -11,7 +11,6 @@ export default function StatusInput({ edit, setSelectedStatus, order }) {
       { id: 2, value: "Accepted" },
       { id: 3, value: "Technician Assigned" },
       { id: 4, value: "Product Repaired" },
-      { id: 5, value: "Payment Complete" },
     ];
     return array.map((item) => (
       <option id={item.id} key={item.id}>
