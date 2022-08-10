@@ -23,8 +23,8 @@ export default function DisableInputItem({ state, edit }) {
     },
     { title: "Category", defaultValue: state.order.category },
     { title: "Category Type", defaultValue: state.order.categoryType },
-    { title: "Product", defaultValue: state.order.product },
-    { title: "Type", defaultValue: state.order.type },
+    { title: "Brand", defaultValue: state.order.brand },
+    { title: "Model", defaultValue: state.order.model },
   ];
   return (
     <>
