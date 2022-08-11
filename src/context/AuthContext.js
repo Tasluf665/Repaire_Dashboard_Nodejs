@@ -41,6 +41,7 @@ export function AuthProvider({ children }) {
     );
 
     let result = await response.json();
+    console.log("🚀 ~ file: AuthContext.js ~ line 44 ~ login ~ result", result);
 
     if (!result.error) setCurrentUser(result.data);
     else throw new Error(result.error);
