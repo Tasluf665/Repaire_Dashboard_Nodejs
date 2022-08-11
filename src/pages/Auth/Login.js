@@ -35,6 +35,7 @@ export default function Login() {
       await login(emailRef.current.value, passwordRef.current.value);
       history.push("/");
     } catch (ex) {
+      console.log("🚀 ~ file: Login.js ~ line 38 ~ handleSubmit ~ ex", ex);
       setError(ex.message);
     }
 
@@ -60,6 +61,7 @@ export default function Login() {
       await loginWithGoogle(name, email, googleId, accessToken);
       history.push("/");
     } catch (ex) {
+      console.log("🚀 ~ file: Login.js ~ line 64 ~ handleGoogleLogin ~ ex", ex);
       setError(ex.message);
     }
 

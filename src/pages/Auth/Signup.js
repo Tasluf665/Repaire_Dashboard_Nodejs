@@ -34,13 +34,14 @@ export default function Signup() {
       Swal.fire({
         position: "center",
         icon: "success",
-        title: result.message,
+        title: result,
         showConfirmButton: false,
         timer: 3000,
       });
 
       history.push("/login");
     } catch (ex) {
+      console.log("🚀 ~ file: Signup.js ~ line 44 ~ handleSubmit ~ ex", ex);
       setError(ex.message);
     }
 

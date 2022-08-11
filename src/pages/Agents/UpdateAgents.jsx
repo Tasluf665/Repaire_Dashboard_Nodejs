@@ -30,14 +30,18 @@ export default function UpdateAgents(props) {
             },
           }
         );
-        const data = await res.json();
+        const result = await res.json();
 
-        if (data.error) {
-          dispatch({ type: ERROR, value: data.error });
+        if (result.error) {
+          dispatch({ type: ERROR, value: result.error });
         } else {
-          dispatch({ type: FETCH_DATA_FROM_SERVER, value: data });
+          dispatch({ type: FETCH_DATA_FROM_SERVER, value: result.data });
         }
       } catch (ex) {
+        console.log(
+          "🚀 ~ file: UpdateAgents.jsx ~ line 41 ~ getAgent ~ ex",
+          ex
+        );
         dispatch({ type: ERROR, value: ex.message });
       }
     };

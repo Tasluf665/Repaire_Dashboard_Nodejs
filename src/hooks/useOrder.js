@@ -43,7 +43,7 @@ export default function useOrder(dispatch, orderId) {
           dispatch({
             type: FETCH_DATA_FROM_SERVER,
             value: {
-              order: result.order,
+              order: result.data,
               technicians: allTechniciansResult.data,
               agents: allAgentsResult.data,
             },
@@ -52,27 +52,37 @@ export default function useOrder(dispatch, orderId) {
           dispatch({ type: ERROR, value: result.error });
         }
       } catch (ex) {
+        console.log(
+          "🚀 ~ file: useOrder.js ~ line 55 ~ getDataFromServer ~ ex",
+          ex
+        );
         dispatch({ type: ERROR, value: ex.message });
       }
     };
     getDataFromServer();
-  }, []);
+  }, [currentUser.token, dispatch, orderId]);
 
   const updateOrder = async (data, linkName) => {
-    const res = await fetch(
-      `${process.env.REACT_APP_BACKEND_BASE_URL}/api/orders/${linkName}/${orderId}`,
-      {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          "x-auth-token": currentUser.token,
-        },
-        body: JSON.stringify(data),
-      }
-    );
+    try {
+      const res = await fetch(
+        `${process.env.REACT_APP_BACKEND_BASE_URL}/api/orders/${linkName}/${orderId}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            "x-auth-token": currentUser.token,
+          },
+          body: JSON.stringify(data),
+        }
+      );
 
-    const result = await res.json();
-    showResultAnimation(result, "Order has been updated");
+      const result = await res.json();
+      if (result.error) throw new Error(result.error);
+      showResultAnimation(result, result.success);
+    } catch (ex) {
+      console.log("🚀 ~ file: useOrder.js ~ line 82 ~ updateOrder ~ ex", ex);
+      dispatch({ type: ERROR, value: ex.message });
+    }
   };
 
   const handleSubmit = async (event) => {

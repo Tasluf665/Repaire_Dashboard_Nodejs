@@ -9,15 +9,21 @@ const useTable = (linkName, pageNumber, pageSize, dispatch, state) => {
   React.useEffect(() => {
     const getData = async () => {
       try {
-        const data = await fetchData(
+        const result = await fetchData(
           currentUser.token,
           linkName,
           pageNumber,
           pageSize
         );
-        if (!data.error) dispatch({ type: ADD_DATA, data: data });
-        else dispatch({ type: ERROR, value: data.error });
+
+        if (!result.error)
+          dispatch({
+            type: ADD_DATA,
+            data: { data: result.data, count: result.count },
+          });
+        else dispatch({ type: ERROR, value: result.error });
       } catch (ex) {
+        console.log("🚀 ~ file: useTable.js ~ line 26 ~ getData ~ ex", ex);
         dispatch({ type: ERROR, value: ex.message });
       }
     };
@@ -28,29 +34,31 @@ const useTable = (linkName, pageNumber, pageSize, dispatch, state) => {
   const hanldeSearch = async (event) => {
     const search = event.target.value !== "" ? event.target.value : null;
     try {
-      const data = await fetchData(
+      const result = await fetchData(
         currentUser.token,
         linkName,
         pageNumber,
         pageSize,
         search
       );
-      if (!data.error) {
+
+      if (!result.error) {
         dispatch({
           type: SEARCH,
           currPage: 0,
-          data: data,
+          data: { data: result.data, count: result.count },
           search: event.target.value,
         });
-      } else dispatch({ type: ERROR, value: data.error });
+      } else dispatch({ type: ERROR, value: result.error });
     } catch (ex) {
+      console.log("🚀 ~ file: useTable.js ~ line 54 ~ hanldeSearch ~ ex", ex);
       dispatch({ type: ERROR, value: ex.message });
     }
   };
 
   const handlePaginationClick = async (index) => {
     try {
-      const data = await fetchData(
+      const result = await fetchData(
         currentUser.token,
         linkName,
         index + 1,
@@ -58,10 +66,18 @@ const useTable = (linkName, pageNumber, pageSize, dispatch, state) => {
         state.search
       );
 
-      if (!data.error)
-        dispatch({ type: PAGINATION, currPage: index, data: data });
-      else dispatch({ type: ERROR, value: data.error });
+      if (!result.error)
+        dispatch({
+          type: PAGINATION,
+          currPage: index,
+          data: { data: result.data, count: result.count },
+        });
+      else dispatch({ type: ERROR, value: result.error });
     } catch (ex) {
+      console.log(
+        "🚀 ~ file: useTable.js ~ line 77 ~ handlePaginationClick ~ ex",
+        ex
+      );
       dispatch({ type: ERROR, value: ex.message });
     }
   };

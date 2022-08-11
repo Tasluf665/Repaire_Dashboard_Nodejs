@@ -1,5 +1,3 @@
-import _ from "lodash";
-
 import { useAuth } from "../context/AuthContext";
 import {
   DATA_ADDED_TO_SERVER,
@@ -26,14 +24,18 @@ export default function useAddUpdateToDB(dispatch) {
       );
 
       let result = await response.json();
+
       if (!result.error) {
-        dispatch({ type: DATA_UPDATED_TO_SERVER, value: result });
-        showResultAnimation(
-          result,
-          `${_.startCase(linkName)} is successfully updated`
-        );
-      } else dispatch({ type: ERROR, value: result.error });
+        dispatch({ type: DATA_UPDATED_TO_SERVER, value: result.data });
+        showResultAnimation(result, result.success);
+      } else {
+        dispatch({ type: ERROR, value: result.error });
+      }
     } catch (ex) {
+      console.log(
+        "🚀 ~ file: useAddUpdateToDB.js ~ line 37 ~ updateToServer ~ ex",
+        ex
+      );
       dispatch({ type: ERROR, value: ex.message });
     }
   };
@@ -57,13 +59,15 @@ export default function useAddUpdateToDB(dispatch) {
 
       if (!result.error) {
         dispatch({ type: DATA_ADDED_TO_SERVER });
-        showResultAnimation(
-          result,
-          `${_.startCase(linkName)} is successfully updated`
-        );
-      } else dispatch({ type: ERROR, value: result.error });
+        showResultAnimation(result, result.success);
+      } else {
+        dispatch({ type: ERROR, value: result.error });
+      }
     } catch (ex) {
-      console.log("In Ex");
+      console.log(
+        "🚀 ~ file: useAddUpdateToDB.js ~ line 66 ~ addToServer ~ ex",
+        ex
+      );
       dispatch({ type: ERROR, value: ex.message });
     }
   };

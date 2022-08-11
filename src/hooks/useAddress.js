@@ -20,11 +20,13 @@ export default function useAddress(dispatch) {
             },
           }
         );
-        const data = await res.json();
-        if (!data.error) {
-          setData(data);
-        } else dispatch({ type: ERROR, value: data.error });
+        const result = await res.json();
+
+        if (!result.error) {
+          setData(result.data);
+        } else dispatch({ type: ERROR, value: result.error });
       } catch (ex) {
+        console.log("🚀 ~ file: useAddress.js ~ line 29 ~ ex", ex);
         dispatch({ type: ERROR, value: ex.message });
       }
     },

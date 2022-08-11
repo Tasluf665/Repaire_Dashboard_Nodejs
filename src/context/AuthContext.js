@@ -24,7 +24,7 @@ export function AuthProvider({ children }) {
 
     let result = await response.json();
 
-    if (!result.error) return result;
+    if (!result.error) return result.success;
     else throw new Error(result.error);
   }
 
@@ -42,9 +42,7 @@ export function AuthProvider({ children }) {
 
     let result = await response.json();
 
-    console.log(result);
-
-    if (!result.error) setCurrentUser(result);
+    if (!result.error) setCurrentUser(result.data);
     else throw new Error(result.error);
   }
 
@@ -63,7 +61,7 @@ export function AuthProvider({ children }) {
 
     let result = await response.json();
 
-    if (!result.error) setCurrentUser(result);
+    if (!result.error) setCurrentUser(result.data);
     else throw new Error(result.error);
   }
 
