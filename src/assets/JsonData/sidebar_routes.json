@@ -14,5 +14,10 @@
         "display_name": "Orders",
         "route": "/orders",
         "icon": "bx bxs-cart-alt"
+    },
+    {
+        "display_name": "Profile",
+        "route": "/profile",
+        "icon": "bx bx-user-pin"
     }
 ]
