@@ -85,12 +85,17 @@ export function AuthProvider({ children }) {
     else throw new Error(result.error);
   }
 
+  function signOut() {
+    setCurrentUser(null);
+  }
+
   const value = {
     currentUser,
     signup,
     login,
     loginWithGoogle,
     resetPassword,
+    signOut,
   };
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

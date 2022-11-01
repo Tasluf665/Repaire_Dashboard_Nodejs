@@ -5,6 +5,7 @@ import "./layout.css";
 import Sidebar from "../sidebar/Sidebar";
 import Routes from "../Routes";
 import Topnav from "../TopNav/Topnav";
+import AccountPopover from "../TopNav/AccountProvider";
 import { AuthProvider } from "../../context/AuthContext";
 
 import { BrowserRouter, Route } from "react-router-dom";
@@ -21,7 +22,15 @@ const Layout = () => {
               <AuthProvider>
                 <Sidebar {...props} />
                 <div className="layout__content">
-                  <Topnav />
+                  <div className="topnav" style={{ display: "block" }}>
+                    <div
+                      style={{
+                        float: "right",
+                      }}
+                    >
+                      <AccountPopover />
+                    </div>
+                  </div>
                   <div className="layout__content-main">
                     <Routes />
                   </div>
