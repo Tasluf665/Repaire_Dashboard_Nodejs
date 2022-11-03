@@ -5,8 +5,8 @@ import { Link } from "react-router-dom";
 import "./sidebar.css";
 
 import logo from "../../assets/images/logo.jpg";
-
 import sidebar_items from "../../assets/JsonData/sidebar_routes.json";
+import Iconify from "../iconify/Iconify";
 
 const SidebarItem = (props) => {
   const active = props.active ? "active" : "";
@@ -14,8 +14,8 @@ const SidebarItem = (props) => {
   return (
     <div className="sidebar__item">
       <div className={`sidebar__item-inner ${active}`}>
-        <i className={props.icon}></i>
-        <span>{props.title}</span>
+        <Iconify icon={props.icon} width={25} height={25} />
+        <span style={{ margin: 10, paddingTop: 3 }}>{props.title}</span>
       </div>
     </div>
   );

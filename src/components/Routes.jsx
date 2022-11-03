@@ -1,6 +1,7 @@
 import React from "react";
 import { Route, Switch, Redirect } from "react-router-dom";
 
+import Dashboard from "../pages/Dashboard/Dashboard";
 import Agents from "../pages/Agents/Agents";
 import AddAgents from "../pages/Agents/AddAgents";
 import UpdateAgents from "../pages/Agents/UpdateAgents";
@@ -21,7 +22,8 @@ const Routes = () => {
   const { currentUser } = useAuth();
   return (
     <Switch>
-      <PrivateRoute path="/" exact component={Agents} />
+      <PrivateRoute path="/" exact component={Dashboard} />
+      <PrivateRoute path="/dashboard" exact component={Dashboard} />
       <PrivateRoute path="/agents" component={Agents} />
       <PrivateRoute path="/addagents" component={AddAgents} />
       <PrivateRoute path="/updateagents" component={UpdateAgents} />
