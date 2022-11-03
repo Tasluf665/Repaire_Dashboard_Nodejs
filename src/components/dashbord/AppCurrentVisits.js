@@ -72,7 +72,7 @@ export default function AppCurrentVisits({
   });
 
   return (
-    <Card {...other}>
+    <Card {...other} style={{ borderRadius: "3%" }}>
       <CardHeader title={title} subheader={subheader} />
 
       <StyledChartWrapper dir="ltr">

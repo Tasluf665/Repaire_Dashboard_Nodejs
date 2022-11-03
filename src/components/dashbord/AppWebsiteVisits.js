@@ -41,7 +41,7 @@ export default function AppWebsiteVisits({
   });
 
   return (
-    <Card {...other}>
+    <Card {...other} style={{ borderRadius: "3%" }}>
       <CardHeader title={title} subheader={subheader} />
 
       <Box sx={{ p: 3, pb: 1 }} dir="ltr">
