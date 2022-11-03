@@ -1,4 +1,3 @@
-import { faker } from "@faker-js/faker";
 // @mui
 import { useTheme } from "@mui/material/styles";
 import { Grid, Container, Typography } from "@mui/material";
@@ -10,11 +9,97 @@ import {
   AppWebsiteVisits,
   AppCurrentVisits,
 } from "../../components/dashbord";
+import { useAuth } from "../../context/AuthContext";
+import React from "react";
 
 // ----------------------------------------------------------------------
 
 export default function DashboardAppPage() {
   const theme = useTheme();
+  const { currentUser } = useAuth();
+  const [totalProfit, setTotalProfit] = React.useState(0);
+  const [weeklySells, setWeeklySells] = React.useState(0);
+  const [pendingOrder, setPendingOrder] = React.useState(0);
+  const [userNumber, setUserNumber] = React.useState(0);
+  const [countOrderCategory, setCountOrderCategory] = React.useState({
+    tv: 0,
+    fridge: 0,
+    ac: 0,
+    fan: 0,
+  });
+
+  const fetchCountOrderCategory = async (jwtToken) => {
+    const res = await fetch(
+      `${process.env.REACT_APP_BACKEND_BASE_URL}/api/orders/countOrderCategory`,
+      {
+        headers: {
+          "x-auth-token": jwtToken,
+        },
+      }
+    );
+    const data = await res.json();
+    setCountOrderCategory((state) => ({ ...state, ...data.count }));
+  };
+
+  const fetchTotalProfit = async (jwtToken) => {
+    const res = await fetch(
+      `${process.env.REACT_APP_BACKEND_BASE_URL}/api/orders/totalProfit`,
+      {
+        headers: {
+          "x-auth-token": jwtToken,
+        },
+      }
+    );
+    const data = await res.json();
+    setTotalProfit(data.totalProfit);
+  };
+
+  const fetchWeeklySells = async (jwtToken) => {
+    const res = await fetch(
+      `${process.env.REACT_APP_BACKEND_BASE_URL}/api/orders/weeklySells`,
+      {
+        headers: {
+          "x-auth-token": jwtToken,
+        },
+      }
+    );
+    const data = await res.json();
+    setWeeklySells(data.count);
+  };
+
+  const fetchPendingOrder = async (jwtToken) => {
+    const res = await fetch(
+      `${process.env.REACT_APP_BACKEND_BASE_URL}/api/orders/pendingOrder`,
+      {
+        headers: {
+          "x-auth-token": jwtToken,
+        },
+      }
+    );
+    const data = await res.json();
+    setPendingOrder(data.count);
+  };
+
+  const fetchUserNumber = async (jwtToken) => {
+    const res = await fetch(
+      `${process.env.REACT_APP_BACKEND_BASE_URL}/api/users/userNumber`,
+      {
+        headers: {
+          "x-auth-token": jwtToken,
+        },
+      }
+    );
+    const data = await res.json();
+    setUserNumber(data.count);
+  };
+
+  React.useEffect(() => {
+    fetchTotalProfit(currentUser.token);
+    fetchWeeklySells(currentUser.token);
+    fetchPendingOrder(currentUser.token);
+    fetchUserNumber(currentUser.token);
+    fetchCountOrderCategory(currentUser.token);
+  }, []);
 
   return (
     <>
@@ -29,15 +114,15 @@ export default function DashboardAppPage() {
           <Grid item xs={12} sm={6} md={3}>
             <AppWidgetSummary
               title="Weekly Sales"
-              total={714000}
+              total={weeklySells}
               icon={"icon-park-solid:sales-report"}
             />
           </Grid>
           {/* Total order complete money */}
           <Grid item xs={12} sm={6} md={3}>
             <AppWidgetSummary
-              title="Profit"
-              total={1352831}
+              title="Total Earn"
+              total={totalProfit}
               color="info"
               icon={"dashicons:money-alt"}
             />
@@ -47,7 +132,7 @@ export default function DashboardAppPage() {
           <Grid item xs={12} sm={6} md={3}>
             <AppWidgetSummary
               title="Total users"
-              total={1723315}
+              total={userNumber}
               color="warning"
               icon={"fa6-solid:users-line"}
             />
@@ -56,7 +141,7 @@ export default function DashboardAppPage() {
           <Grid item xs={12} sm={6} md={3}>
             <AppWidgetSummary
               title="Pending Orders"
-              total={234}
+              total={pendingOrder}
               color="error"
               icon={"ic:baseline-pending-actions"}
             />
@@ -95,10 +180,10 @@ export default function DashboardAppPage() {
             <AppCurrentVisits
               title="Sells in differnet category"
               chartData={[
-                { label: "Tv", value: 50 },
-                { label: "Fridge", value: 15 },
-                { label: "Ac", value: 25 },
-                { label: "Fan", value: 40 },
+                { label: "Tv", value: countOrderCategory.tv },
+                { label: "Fridge", value: countOrderCategory.fridge },
+                { label: "Ac", value: countOrderCategory.ac },
+                { label: "Fan", value: countOrderCategory.fan },
               ]}
               chartColors={[
                 theme.palette.primary.main,
