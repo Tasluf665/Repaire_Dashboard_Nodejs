@@ -21,11 +21,12 @@ export default function DashboardAppPage() {
   const [weeklySells, setWeeklySells] = React.useState(0);
   const [pendingOrder, setPendingOrder] = React.useState(0);
   const [userNumber, setUserNumber] = React.useState(0);
+  const [sellsInMonth, setSellsInMonth] = React.useState([]);
   const [countOrderCategory, setCountOrderCategory] = React.useState({
-    tv: 0,
-    fridge: 0,
-    ac: 0,
-    fan: 0,
+    tv: 1,
+    fridge: 1,
+    ac: 1,
+    fan: 1,
   });
 
   const fetchCountOrderCategory = async (jwtToken) => {
@@ -39,6 +40,19 @@ export default function DashboardAppPage() {
     );
     const data = await res.json();
     setCountOrderCategory((state) => ({ ...state, ...data.count }));
+  };
+
+  const fetchSellsInMonth = async (jwtToken) => {
+    const res = await fetch(
+      `${process.env.REACT_APP_BACKEND_BASE_URL}/api/orders/sellsInMonth`,
+      {
+        headers: {
+          "x-auth-token": jwtToken,
+        },
+      }
+    );
+    const data = await res.json();
+    setSellsInMonth(data.month);
   };
 
   const fetchTotalProfit = async (jwtToken) => {
@@ -99,6 +113,7 @@ export default function DashboardAppPage() {
     fetchPendingOrder(currentUser.token);
     fetchUserNumber(currentUser.token);
     fetchCountOrderCategory(currentUser.token);
+    fetchSellsInMonth(currentUser.token);
   }, []);
 
   return (
@@ -152,24 +167,25 @@ export default function DashboardAppPage() {
             <AppWebsiteVisits
               title="Sells in every month"
               chartLabels={[
-                "01/01/2003",
-                "02/01/2003",
-                "03/01/2003",
-                "04/01/2003",
-                "05/01/2003",
-                "06/01/2003",
-                "07/01/2003",
-                "08/01/2003",
-                "09/01/2003",
-                "10/01/2003",
-                "11/01/2003",
+                `01/01/${new Date().getFullYear()}`,
+                `02/01/${new Date().getFullYear()}`,
+                `03/01/${new Date().getFullYear()}`,
+                `04/01/${new Date().getFullYear()}`,
+                `05/01/${new Date().getFullYear()}`,
+                `06/01/${new Date().getFullYear()}`,
+                `07/01/${new Date().getFullYear()}`,
+                `08/01/${new Date().getFullYear()}`,
+                `09/01/${new Date().getFullYear()}`,
+                `10/01/${new Date().getFullYear()}`,
+                `11/01/${new Date().getFullYear()}`,
+                `12/01/${new Date().getFullYear()}`,
               ]}
               chartData={[
                 {
                   name: "Team C",
                   type: "line",
                   fill: "solid",
-                  data: [30, 25, 36, 30, 45, 35, 64, 52, 59, 36, 39],
+                  data: sellsInMonth,
                 },
               ]}
             />

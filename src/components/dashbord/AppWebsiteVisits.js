@@ -32,7 +32,7 @@ export default function AppWebsiteVisits({
       y: {
         formatter: (y) => {
           if (typeof y !== "undefined") {
-            return `${y.toFixed(0)} visits`;
+            return `${y.toFixed(0)} sells`;
           }
           return y;
         },
